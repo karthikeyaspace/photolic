@@ -14,36 +14,6 @@ user: {
 store api key of user in local storage
 use supabase to store user profile and generations
 
-prisma schema
-```prisma
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  avatar    String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  generations Generation[]
-}
-
-model Generation {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  name      String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}
-```
-
-prisma initialization commands
-
-```bash
-npx prisma init
-npx prisma migrate dev --name init
-npx prisma generate
-```
-
 
 
 what to do more
@@ -52,3 +22,6 @@ what to do more
 - configure api options
 - configure ui sidebar
 - prisma storage - figure out a way for less api calls
+
+https://next-js-flux1-replicate.vercel.app/
+https://github.com/ashakoen/next-js-flux1-replicate/blob/main/src/app/api/replicate/route.ts
