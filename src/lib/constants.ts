@@ -1,4 +1,5 @@
 const emotions = [
+  "",
   "Happy",
   "Sad",
   "Excited",
@@ -24,6 +25,7 @@ const aspectRatios = [
 ];
 
 const cameraPositions = [
+  "",
   "Close-up",
   "Medium shot",
   "Wide shot",
@@ -37,6 +39,7 @@ const cameraPositions = [
 ];
 
 const places = [
+  "",
   "Eiffel Tower, Paris, France",
   "Great Wall of China, Beijing, China",
   "Statue of Liberty, New York, USA",

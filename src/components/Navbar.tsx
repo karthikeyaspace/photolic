@@ -1,4 +1,7 @@
+"use client";
 import React from "react";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 const Navbar = () => {
   return (
@@ -7,7 +10,15 @@ const Navbar = () => {
         <span className="font-bold">PHOTOLIC</span> <p>AI</p>
       </div>
 
-      <div>credits left: 5000</div>
+      <div>
+        <Link href={"/login"}>Login</Link>
+        <button
+          onClick={() => signOut()}
+          className="bg-gray-800 text-white px-4 py-2 rounded-md"
+        >
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 };

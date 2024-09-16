@@ -30,4 +30,6 @@ export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
 };
 
-export const getServerSessionAuth = () => getServerSession(authOptions);
+export async function getServerSessionAuth() {
+  return getServerSession(authOptions);
+}

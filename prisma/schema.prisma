@@ -15,16 +15,30 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
+  id            String       @id @default(cuid())
+  name          String?
+  email         String       @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  generations    Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  generations   Generation[]
+}
+
+model Generation {
+  id             String   @id @default(cuid())
+  userId         String
+  url            String
+  prompt         String
+  aspectRatio    String
+  seed           Int?
+  inferenceSteps Int      @default(30)
+  model          String
+  isSaved        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id])
 }
 
 model Account {
@@ -39,29 +53,21 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
- 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
- 
-  @@id([identifier, token])
 }
