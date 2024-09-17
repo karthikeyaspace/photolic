@@ -11,4 +11,12 @@ interface SidebarFormTypes {
   seed: string;
 }
 
-export type { SidebarFormTypes };
+interface ImageResProps {
+  url: string;
+  prompt: string;
+  aspectRatio: string;
+  model: string;
+  isSaved: boolean;
+}
+
+export type { SidebarFormTypes, ImageResProps };

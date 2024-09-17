@@ -2,9 +2,16 @@
 
 import React, { useState } from "react";
 import { Camera, ChevronDown } from "lucide-react";
-import { SidebarFormTypes } from "@/lib/types";
-import { emotions, cameraPositions, places, aspectRatios } from "@/lib/constants";
+import { ImageResProps, SidebarFormTypes } from "@/lib/types";
+import {
+  emotions,
+  cameraPositions,
+  places,
+  aspectRatios,
+} from "@/lib/constants";
 import { generateImages } from "@/app/actions/generateImages";
+import { useGeneration } from "@/hooks/useGeneration";
+import { useImages } from "@/hooks/useImages";
 
 const Sidebar = () => {
   const [state, setState] = useState<SidebarFormTypes>({
@@ -19,7 +26,8 @@ const Sidebar = () => {
     useSeed: false,
     seed: "",
   });
-  const [loading, setLoading] = useState<boolean>(false);
+  const { isGenerating, setIsGenerating, setGeneratingConfig } = useGeneration();
+  const { addImages, refetch } = useImages();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -37,25 +45,26 @@ const Sidebar = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsGenerating(true);
+    setGeneratingConfig({
+      numOutputs: state.numOutputs,
+      aspectRatio: state.aspectRatio,
+    });
     try {
       const res = await generateImages(state);
-      if (res.success){
-        const imageuris = res.data;
-        localStorage.setItem("images", JSON.stringify(imageuris));
-        console.log(imageuris)
+      if (res.success) {
+        addImages(res.data as ImageResProps[]);
       }
-      else console.log("Failed to generate images", res.message);
     } catch (err) {
       console.log(err);
     }
-    setLoading(false);
+    setIsGenerating(false);
   };
 
   return (
     <form
       onSubmit={handleFormSubmit}
-      className="p-6 bg-black text-white h-full flex flex-col"
+      className="p-6 bg-black text-white h-full flex flex-col overflow-y-auto small-scrollbar "
     >
       <h2 className="text-sm font-semibold mb-2">
         WHAT DO YOU WANT TO CREATE? (PROMPT)
@@ -233,9 +242,9 @@ const Sidebar = () => {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={isGenerating}
         className={`w-full ${
-          loading ? "bg-blue-300" : "bg-blue-500"
+          isGenerating ? "bg-blue-300" : "bg-blue-500"
         } text-white p-3 rounded-md flex items-center justify-center mt-auto`}
       >
         <Camera className="mr-2" size={18} />

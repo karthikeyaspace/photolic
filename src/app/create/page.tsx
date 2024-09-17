@@ -11,10 +11,10 @@ const CreatePage = async () => {
   }
   return (
     <div className="h-[calc(100vh-56px)] w-full flex bg-black ">
-      <div className="w-[30%] border-r border-gray-800 overflow-y-auto small-scrollbar ">
+      <div className="w-[30%] border-r border-gray-800">
         <Sidebar />
       </div>
-      <div className="w-[70%] overflow-y-auto small-scrollbar ">
+      <div className="w-[70%]  overflow-y-auto small-scrollbar ">
         <ImagePreview />
       </div>
     </div>
