@@ -13,16 +13,16 @@ interface ImageContextType {
   refetch: () => Promise<void>;
 }
 
-export const ImageContext = createContext<
-  ImageContextType | undefined
->(undefined);
+export const ImageContext = createContext<ImageContextType | undefined>(
+  undefined
+);
 
 const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { data: session, status } = useSession();
   const [images, setImages] = useState<ImageResProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchImages = useCallback(async () => {
@@ -52,11 +52,10 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchImages();
   }, [status]);
 
+  const addImages = (newImages: ImageResProps[]) => {
+    setImages((prevImages) => [...newImages, ...prevImages]);
+  };
 
-  const addImages = useCallback((newImages: ImageResProps[]) => {
-    setImages(prevImages => [...newImages, ...prevImages]);
-  }, []);
-  
   return (
     <ImageContext.Provider
       value={{

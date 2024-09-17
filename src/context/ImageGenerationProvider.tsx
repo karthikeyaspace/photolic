@@ -6,16 +6,8 @@ import { createContext, useState } from "react";
 interface ImageGenerationContextType {
   isGenerating: boolean;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
-  generatingConfig: {
-    numOutputs: number;
-    aspectRatio: string;
-  };
-  setGeneratingConfig: React.Dispatch<
-    React.SetStateAction<{
-      numOutputs: number;
-      aspectRatio: string;
-    }>
-  >;
+  outputsCount: number;
+  setOutputsCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const ImageGenerationContext = createContext<
@@ -26,17 +18,14 @@ const ImageGenerationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatingConfig, setGeneratingConfig] = useState({
-    numOutputs: 1,
-    aspectRatio: "2:3",
-  });
+  const [outputsCount, setOutputsCount] = useState<number>(1);
   return (
     <ImageGenerationContext.Provider
       value={{
         isGenerating,
         setIsGenerating,
-        generatingConfig,
-        setGeneratingConfig,
+        outputsCount,
+        setOutputsCount,
       }}
     >
       {children}

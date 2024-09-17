@@ -19,10 +19,11 @@ const getAllImages = async () => {
         url: true,
         prompt: true,
         aspectRatio: true,
-        isSaved: true,  
+        isSaved: true,
         model: true,
       },
       orderBy: { createdAt: "desc" },
+      // causing order issue as a user can create multiple images at once - in schema add autoincrement in a new filed and order by that
     });
     return { success: true, data: images };
   } catch (error) {

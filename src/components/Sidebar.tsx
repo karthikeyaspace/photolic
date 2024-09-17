@@ -22,12 +22,12 @@ const Sidebar = () => {
     cameraPosition: cameraPositions[0],
     place: places[0],
     numOutputs: 1,
-    aspectRatio: "2:3",
+    aspectRatio: "1:1",
     useSeed: false,
     seed: "",
   });
-  const { isGenerating, setIsGenerating, setGeneratingConfig } = useGeneration();
-  const { addImages, refetch } = useImages();
+  const { isGenerating, setIsGenerating, setOutputsCount } = useGeneration();
+  const { addImages } = useImages();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -46,10 +46,7 @@ const Sidebar = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGenerating(true);
-    setGeneratingConfig({
-      numOutputs: state.numOutputs,
-      aspectRatio: state.aspectRatio,
-    });
+    setOutputsCount(state.numOutputs);
     try {
       const res = await generateImages(state);
       if (res.success) {
@@ -181,6 +178,8 @@ const Sidebar = () => {
           type="number"
           name="numOutputs"
           value={state.numOutputs}
+          min={1}
+          max={4}
           onChange={handleChange}
           placeholder="Enter number of photos"
           className="bg-[#2C2C2C] w-full outline-none px-3 h-10 rounded"
