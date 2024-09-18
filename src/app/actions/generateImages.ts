@@ -5,19 +5,7 @@ import Replicate from "replicate";
 import { getServerSessionAuth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
-
-type GenerationCreateManyInput = {
-  id?: string;
-  userId: string;
-  url: string;
-  prompt: string;
-  aspectRatio: string;
-  seed?: number | null;
-  inferenceSteps?: number;
-  model: string;
-  isSaved?: boolean;
-  createdAt?: Date | string;
-};
+import { GenerationCreateManyInput } from "@/lib/types";
 
 const replicate = new Replicate();
 const generateImages = async (formData: SidebarFormTypes) => {
@@ -74,9 +62,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
         url: uri,
         prompt: formData.prompt,
         aspectRatio: formData.aspectRatio,
-        seed: formData.useSeed
-          ? parseInt(formData.seed)
-          : Math.floor(Math.random() * 1000000),
+        seed: formData.seed,
         inferenceSteps: 30,
         model: "black-forest-labs/flux-schnell",
       });

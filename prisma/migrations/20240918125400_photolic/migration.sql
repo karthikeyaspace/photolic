@@ -16,6 +16,12 @@ CREATE TABLE "Generation" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "url" TEXT NOT NULL,
+    "prompt" TEXT NOT NULL,
+    "aspectRatio" TEXT NOT NULL,
+    "seed" INTEGER,
+    "inferenceSteps" INTEGER NOT NULL DEFAULT 30,
+    "model" TEXT NOT NULL,
+    "isSaved" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Generation_pkey" PRIMARY KEY ("id")
@@ -56,7 +62,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
 
 -- AddForeignKey
-ALTER TABLE "Generation" ADD CONSTRAINT "Generation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Generation" ADD CONSTRAINT "Generation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

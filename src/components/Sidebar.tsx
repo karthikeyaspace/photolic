@@ -12,22 +12,26 @@ import {
 import { generateImages } from "@/app/actions/generateImages";
 import { useGeneration } from "@/hooks/useGeneration";
 import { useImages } from "@/hooks/useImages";
+import { motion } from "framer-motion";
 
 const Sidebar = () => {
   const [state, setState] = useState<SidebarFormTypes>({
+    model: "flux-schnell",
     prompt: "",
     creativity: "50",
-    filmType: "",
     emotion: emotions[0],
     cameraPosition: cameraPositions[0],
     place: places[0],
     numOutputs: 1,
+    outputQuality: 75,
+    outputFormat: "webp",
     aspectRatio: "1:1",
-    useSeed: false,
-    seed: "",
+    seed: Math.floor(Math.random() * 1000000),
+    disableSafetyChecker: false,
   });
   const { isGenerating, setIsGenerating, setOutputsCount } = useGeneration();
   const { addImages } = useImages();
+  const [useSeed, setUseSeed] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -38,15 +42,11 @@ const Sidebar = () => {
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setState((prev) => ({ ...prev, [name]: checked }));
-  };
-
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGenerating(true);
     setOutputsCount(state.numOutputs);
+    if(state.prompt === "") return;
     try {
       const res = await generateImages(state);
       if (res.success) {
@@ -59,10 +59,42 @@ const Sidebar = () => {
   };
 
   return (
-    <form
+    <motion.form
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2 }}
       onSubmit={handleFormSubmit}
-      className="p-6 bg-black text-white h-full flex flex-col overflow-y-auto small-scrollbar "
+      className="p-6 bg-black text-white h-full flex flex-col overflow-y-auto small-scrollbar space-y-6"
     >
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">MODEL</h3>
+        <div className="bg-[#2C2C2C] rounded relative">
+          <select
+            name="emotion"
+            value={state.model}
+            onChange={handleChange}
+            className="bg-transparent w-full outline-none appearance-none px-3 h-10"
+          >
+            <option
+              key={state.model}
+              value={state.model}
+              className="bg-gray-800"
+            >
+              Flux Schnell
+            </option>
+            <option className="bg-gray-800" disabled>
+              Flux Dev
+            </option>
+            <option className="bg-gray-800" disabled>
+              Stable Diffution
+            </option>
+          </select>
+          <ChevronDown
+            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+            size={18}
+          />
+        </div>
+      </div>
       <h2 className="text-sm font-semibold mb-2">
         WHAT DO YOU WANT TO CREATE? (PROMPT)
       </h2>
@@ -91,19 +123,6 @@ const Sidebar = () => {
             background: `linear-gradient(to right, #FF6B6B ${state.creativity}%, #2C2C2C ${state.creativity}%)`,
           }}
         />
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold mb-2">FILM TYPE (BETA)</h3>
-        <div className="bg-[#2C2C2C] rounded">
-          <input
-            type="text"
-            name="filmType"
-            value={state.filmType}
-            onChange={handleChange}
-            className="bg-transparent w-full outline-none px-3 h-10"
-          />
-        </div>
       </div>
 
       <div className="mb-6">
@@ -215,15 +234,15 @@ const Sidebar = () => {
             type="checkbox"
             id="useSeed"
             name="useSeed"
-            checked={state.useSeed}
-            onChange={handleCheckboxChange}
+            checked={useSeed}
+            onChange={() => setUseSeed((prev) => !prev)}
             className="mr-2"
           />
           <label htmlFor="useSeed" className="text-sm">
             Use seed to get similar photo
           </label>
         </div>
-        {state.useSeed && (
+        {useSeed && (
           <input
             type="text"
             name="seed"
@@ -239,6 +258,25 @@ const Sidebar = () => {
         Find other photos with this seed
       </div>
 
+      <div className="flex items-center mb-4">
+        <input
+          type="checkbox"
+          id="disableSafetyChecker"
+          name="disableSafetyChecker"
+          checked={state.disableSafetyChecker}
+          onChange={(e) =>
+            setState((prev) => ({
+              ...prev,
+              disableSafetyChecker: e.target.checked,
+            }))
+          }
+          className="mr-2"
+        />
+        <label htmlFor="disableSafetyChecker" className="text-sm">
+          Disable safety checker
+        </label>
+      </div>
+
       <button
         type="submit"
         disabled={isGenerating}
@@ -247,9 +285,9 @@ const Sidebar = () => {
         } text-white p-3 rounded-md flex items-center justify-center mt-auto`}
       >
         <Camera className="mr-2" size={18} />
-        Take 1 photo (~12s)
+        Generate {state.numOutputs} photo{state.numOutputs > 1 && "s"} (4s)
       </button>
-    </form>
+    </motion.form>
   );
 };
 

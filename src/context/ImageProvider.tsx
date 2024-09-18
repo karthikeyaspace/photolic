@@ -53,6 +53,7 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [status]);
 
   const addImages = (newImages: ImageResProps[]) => {
+    newImages.reverse();
     setImages((prevImages) => [...newImages, ...prevImages]);
   };
 
