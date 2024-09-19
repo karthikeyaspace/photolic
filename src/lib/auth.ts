@@ -1,10 +1,6 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
-import {
-  getServerSession,
-  type SessionStrategy,
-  type NextAuthOptions,
-} from "next-auth";
+import { getServerSession, type NextAuthOptions } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 
 import { prisma } from "./db";
@@ -30,6 +26,4 @@ export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
 };
 
-export async function getServerSessionAuth() {
-  return getServerSession(authOptions);
-}
+export const getServerSessionAuth = async () => getServerSession(authOptions);

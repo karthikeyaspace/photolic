@@ -30,8 +30,8 @@ const Sidebar = () => {
     disableSafetyChecker: false,
   });
   const { isGenerating, setIsGenerating, setOutputsCount } = useGeneration();
-  const { addImages } = useImages();
   const [useSeed, setUseSeed] = useState(false);
+  const { refetch } = useImages();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -46,12 +46,10 @@ const Sidebar = () => {
     e.preventDefault();
     setIsGenerating(true);
     setOutputsCount(state.numOutputs);
-    if(state.prompt === "") return;
+    if (state.prompt === "") return;
     try {
       const res = await generateImages(state);
-      if (res.success) {
-        addImages(res.data as ImageResProps[]);
-      }
+      if (res.success) refetch(false);
     } catch (err) {
       console.log(err);
     }
@@ -98,7 +96,7 @@ const Sidebar = () => {
       <h2 className="text-sm font-semibold mb-2">
         WHAT DO YOU WANT TO CREATE? (PROMPT)
       </h2>
-      <div className="bg-[#2C2C2C] border border-[#FF6B6B] rounded mb-6">
+      <div className="bg-[#2C2C2C] border border-blue-500 rounded mb-6">
         <textarea
           name="prompt"
           value={state.prompt}
@@ -120,7 +118,7 @@ const Sidebar = () => {
           onChange={handleChange}
           className="w-full appearance-none bg-[#2C2C2C] h-10 rounded-md"
           style={{
-            background: `linear-gradient(to right, #FF6B6B ${state.creativity}%, #2C2C2C ${state.creativity}%)`,
+            background: `linear-gradient(to right, #3b82f6 ${state.creativity}%, #2C2C2C ${state.creativity}%)`,
           }}
         />
       </div>
@@ -198,7 +196,7 @@ const Sidebar = () => {
           name="numOutputs"
           value={state.numOutputs}
           min={1}
-          max={4}
+          max={2}
           onChange={handleChange}
           placeholder="Enter number of photos"
           className="bg-[#2C2C2C] w-full outline-none px-3 h-10 rounded"

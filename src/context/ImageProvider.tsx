@@ -10,7 +10,7 @@ interface ImageContextType {
   addImages: (newImages: ImageResProps[]) => void;
   loading: boolean;
   error: string | null;
-  refetch: () => Promise<void>;
+  refetch: (userLoad: boolean) => Promise<void>;
 }
 
 export const ImageContext = createContext<ImageContextType | undefined>(
@@ -25,31 +25,34 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchImages = useCallback(async () => {
-    setLoading(true);
-    if (status === "loading") return;
-    if (status === "unauthenticated") {
-      setError("User email not available");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await getAllImages();
-      if (response.success && response.data) {
-        setImages(response.data);
-      } else {
-        setError(response.message || "Failed to fetch images");
+  const fetchImages = useCallback(
+    async (userLoad: boolean) => {
+      if (userLoad) setLoading(true);
+      if (status === "loading") return;
+      if (status === "unauthenticated") {
+        setError("User email not available");
+        setLoading(false);
+        return;
       }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [status]);
+
+      try {
+        const response = await getAllImages();
+        if (response.success && response.data) {
+          setImages(response.data);
+        } else {
+          setError(response.message || "Failed to fetch images");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [status]
+  );
 
   useEffect(() => {
-    fetchImages();
+    fetchImages(false);
   }, [status]);
 
   const addImages = (newImages: ImageResProps[]) => {

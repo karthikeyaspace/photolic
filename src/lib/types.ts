@@ -14,6 +14,7 @@ interface SidebarFormTypes {
 }
 
 interface ImageResProps {
+  id: string;
   url: string;
   prompt: string;
   aspectRatio: string;

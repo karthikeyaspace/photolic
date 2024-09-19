@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
 import { LoaderCircle, RefreshCcw } from "lucide-react";
 import { useImages } from "@/hooks/useImages";
 import { useGeneration } from "@/hooks/useGeneration";
 import ImageComponent from "./ImageComponent";
 import { AnimatePresence, motion } from "framer-motion";
+import { saveImage, deleteImage } from "@/app/actions/saveDeleteImage";
+import Link from "next/link";
 
 const ImagePreview = () => {
   const { images, loading, error, refetch } = useImages();
@@ -21,7 +22,7 @@ const ImagePreview = () => {
     }
 
     if (error) {
-      return <p className="text-red-500 text-center">{error}</p>;
+      return <p className="flex justify-center items-center h-full">{error}</p>;
     }
 
     if (images.length === 0 && !isGenerating) {
@@ -47,7 +48,7 @@ const ImagePreview = () => {
 
     const skeletonLoaderContent = skeletonLoaders.map((_, index) => (
       <ImageComponent
-        key={index + 1000}
+        key={`skeleton-${index}`}
         image={null}
         isGenerating={isGenerating}
         onSave={() => {}}
@@ -59,19 +60,24 @@ const ImagePreview = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {skeletonLoaderContent}
         {images.map((image, index) => (
-          <AnimatePresence>
+          <AnimatePresence key={index}>
             <motion.div
-              key={image?.url || `skeleton-${index}`}
+              key={`skeleton-${index}`}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
             >
               <ImageComponent
+                key={image.id}
                 image={image}
                 isGenerating={false}
-                onSave={() => {}}
-                onDelete={() => {}}
+                onSave={() => {
+                  saveImage(image.id);
+                }}
+                onDelete={() => {
+                  deleteImage(image.id);
+                }}
               />
             </motion.div>
           </AnimatePresence>
@@ -85,13 +91,20 @@ const ImagePreview = () => {
       <div className="bg-black flex justify-between items-center px-4 py-4 border-b border-gray-800 sticky top-0 right-0 z-50">
         <div className="font-bold text-lg flex justify-center items-center gap-2">
           Your Creations{" "}
-          <button onClick={refetch}>
+          <button onClick={() => refetch(true)}>
             <RefreshCcw size={20} />
           </button>
         </div>
         <div className="flex space-x-4">
-          <span className="text-gray-400">Saved</span>
-          <span className="text-gray-400">Deleted</span>
+          <Link href="/create">
+            <span>All</span>
+          </Link>
+          <Link href="/create?state=saved">
+            <span>Saved</span>
+          </Link>
+          <Link href="/create?state=deleted">
+            <span>Deleted</span>
+          </Link>
         </div>
       </div>
 

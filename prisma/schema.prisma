@@ -31,12 +31,14 @@ model Generation {
   id             String   @id @default(cuid())
   userId         String
   url            String
+  count          Int      @default(autoincrement())
   prompt         String
   aspectRatio    String
   seed           Int?
   inferenceSteps Int      @default(30)
   model          String
   isSaved        Boolean  @default(false)
+  isDeleted      Boolean  @default(false)
   createdAt      DateTime @default(now())
   user           User     @relation(fields: [userId], references: [id])
 }
