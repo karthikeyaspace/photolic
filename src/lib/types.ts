@@ -1,5 +1,5 @@
 interface SidebarFormTypes {
-  model: "flux-schnell";
+  model: "black-forest-labs/flux-schnell" | "black-forest-labs/flux-dev";
   prompt: string;
   creativity: string;
   emotion: string;
@@ -22,17 +22,4 @@ interface ImageResProps {
   isSaved: boolean;
 }
 
-interface GenerationCreateManyInput {
-  id?: string;
-  userId: string;
-  url: string;
-  prompt: string;
-  aspectRatio: string;
-  seed?: number | null;
-  inferenceSteps?: number;
-  model: string;
-  isSaved?: boolean;
-  createdAt?: Date | string;
-};
-
-export type { SidebarFormTypes, ImageResProps, GenerationCreateManyInput };
+export type { SidebarFormTypes, ImageResProps };

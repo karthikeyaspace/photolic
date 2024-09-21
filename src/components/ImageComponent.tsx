@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Save, Trash2, X, Copy, ExternalLink, Heart } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Save, Trash2, X } from "lucide-react";
 
 interface ImageResProps {
   id: string;
@@ -28,6 +28,14 @@ export default function Component({
 
   if (isGenerating || !image) {
     return <div className="w-full h-96 animate-pulse bg-gray-800 rounded-lg" />;
+  }
+
+  if (showDetails) {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        setShowDetails(false);
+      }
+    });
   }
 
   return (
@@ -84,40 +92,28 @@ export default function Component({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
+            transition={{ duration: 0.1 }}
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/80"
             onClick={() => setShowDetails(false)}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-gray-900 relative rounded-lg p-3 max-w-2xl w-full mx-4 text-white shadow-xl"
+            <img
+              src={image.url}
+              alt={image.prompt}
+              className="max-w-full max-h-full object-contain"
               onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDetails(false);
+              }}
+              className="p-2 absolute top-4 right-4 rounded-full bg-gray-800/80 hover:bg-gray-700/80 transition-colors border"
             >
-              <button
-                onClick={() => setShowDetails(false)}
-                className="p-1 absolute top-2 right-2 rounded-full hover:bg-gray-700 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <div className="flex flex-col mt-6 px-4">
-                <img
-                  src={image.url}
-                  alt={image.prompt}
-                  className="rounded-md max-h-[80vh]"
-                />
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-sm font-semibold">Prompt</h3>
-                    <p className="text-gray-300">{image.prompt}</p>
-                    <h3 className="text-sm font-semibold">Model</h3>
-                    <p className="text-gray-300">{image.model}</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              <X className="w-6 h-6 text-white" />
+            </button>
+            <p className="absolute bottom-4 left-4 right-4 text-sm text-white text-center bg-black/50 p-2 rounded">
+              {image.prompt}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

@@ -12,3 +12,5 @@ store api key of user in local storage - choice
 - add toast and check the flow of all response messages
 - saved and deleted photos display
 - add infinite scroll loading
+- credits
+- change places, etc to text from drom down

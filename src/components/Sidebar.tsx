@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Camera, ChevronDown } from "lucide-react";
-import { ImageResProps, SidebarFormTypes } from "@/lib/types";
+import { Camera, ChevronDown, Star } from "lucide-react";
+import { SidebarFormTypes } from "@/lib/types";
 import {
+  models,
   emotions,
   cameraPositions,
   places,
@@ -15,8 +16,11 @@ import { useImages } from "@/hooks/useImages";
 import { motion } from "framer-motion";
 
 const Sidebar = () => {
+  const { isGenerating, setIsGenerating, setOutputsCount } = useGeneration();
+  const { refetch } = useImages();
+
   const [state, setState] = useState<SidebarFormTypes>({
-    model: "flux-schnell",
+    model: "black-forest-labs/flux-schnell",
     prompt: "",
     creativity: "50",
     emotion: emotions[0],
@@ -29,9 +33,7 @@ const Sidebar = () => {
     seed: Math.floor(Math.random() * 1000000),
     disableSafetyChecker: false,
   });
-  const { isGenerating, setIsGenerating, setOutputsCount } = useGeneration();
   const [useSeed, setUseSeed] = useState(false);
-  const { refetch } = useImages();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -50,6 +52,7 @@ const Sidebar = () => {
     try {
       const res = await generateImages(state);
       if (res.success) refetch(false);
+      console.log(res.message);
     } catch (err) {
       console.log(err);
     }
@@ -73,19 +76,11 @@ const Sidebar = () => {
             onChange={handleChange}
             className="bg-transparent w-full outline-none appearance-none px-3 h-10"
           >
-            <option
-              key={state.model}
-              value={state.model}
-              className="bg-gray-800"
-            >
-              Flux Schnell
-            </option>
-            <option className="bg-gray-800" disabled>
-              Flux Dev
-            </option>
-            <option className="bg-gray-800" disabled>
-              Stable Diffution
-            </option>
+            {models.map((model) => (
+              <option key={model} value={model} className="bg-gray-800">
+                {model}
+              </option>
+            ))}
           </select>
           <ChevronDown
             className="absolute right-3 top-1/2 transform -translate-y-1/2"
@@ -283,7 +278,9 @@ const Sidebar = () => {
         } text-white p-3 rounded-md flex items-center justify-center mt-auto`}
       >
         <Camera className="mr-2" size={18} />
-        Generate {state.numOutputs} photo{state.numOutputs > 1 && "s"} (4s)
+        Generate {state.numOutputs} photo{state.numOutputs > 1 && "s"} (~
+        {state.numOutputs * 2.5}s) <p className="ml-4 ">{state.numOutputs}</p>
+        <Star size={18} className="text-yellow-500 ml-px" fill="#eab308" />
       </button>
     </motion.form>
   );

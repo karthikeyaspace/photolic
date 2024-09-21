@@ -1,3 +1,5 @@
+const models = ["black-forest-labs/flux-schnell", "black-forest-labs/flux-dev"];
+
 const emotions = [
   "",
   "Happy",
@@ -52,4 +54,4 @@ const places = [
   "Pyramids of Giza, Cairo, Egypt",
 ];
 
-export { emotions, cameraPositions, places, aspectRatios };
+export { models, emotions, cameraPositions, places, aspectRatios };
