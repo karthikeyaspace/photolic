@@ -11,14 +11,15 @@ import {
   aspectRatios,
 } from "@/lib/constants";
 import { generateImages } from "@/app/actions/generateImages";
-import { useGeneration } from "@/hooks/useGeneration";
 import { useImages } from "@/hooks/useImages";
+import { useUser } from "@/hooks/useUser";
 import { motion } from "framer-motion";
+import t from "@/lib/Toast";
 
 const Sidebar = () => {
-  const { isGenerating, setIsGenerating, setOutputsCount } = useGeneration();
-  const { refetch } = useImages();
-
+  const { isGenerating, setIsGenerating, setOutputsCount, refetch } =
+    useImages();
+  const { user, updateCredits } = useUser();
   const [state, setState] = useState<SidebarFormTypes>({
     model: "black-forest-labs/flux-schnell",
     prompt: "",
@@ -51,8 +52,11 @@ const Sidebar = () => {
     if (state.prompt === "") return;
     try {
       const res = await generateImages(state);
-      if (res.success) refetch(false);
-      console.log(res.message);
+      if (res.success) {
+        t("Images generated successfully", "success");
+        updateCredits(user.credits - state.numOutputs);
+        refetch(false);
+      } else t(res.message || "Failed to generate images", "error");
     } catch (err) {
       console.log(err);
     }
@@ -98,6 +102,7 @@ const Sidebar = () => {
           onChange={handleChange}
           placeholder="a photo of a cat eating popsicle"
           rows={3}
+          required
           className="bg-transparent w-full outline-none text-white p-3"
         />
       </div>

@@ -18,13 +18,13 @@ model User {
   id            String       @id @default(cuid())
   name          String?
   email         String       @unique
-  emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  generations   Generation[]
+  credits       Int          @default(0)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  generations   Generation[]
 }
 
 model Generation {

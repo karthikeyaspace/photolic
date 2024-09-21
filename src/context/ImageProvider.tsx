@@ -4,6 +4,7 @@ import React, { useState, useEffect, createContext, useCallback } from "react";
 import { getAllImages } from "@/app/actions/getAllImages";
 import { ImageResProps } from "@/lib/types";
 import { useSession } from "next-auth/react";
+import t from "@/lib/Toast";
 
 interface ImageContextType {
   images: ImageResProps[];
@@ -11,6 +12,11 @@ interface ImageContextType {
   loading: boolean;
   error: string | null;
   refetch: (userLoad: boolean) => Promise<void>;
+
+  isGenerating: boolean;
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
+  outputsCount: number;
+  setOutputsCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const ImageContext = createContext<ImageContextType | undefined>(
@@ -24,32 +30,33 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
   const [images, setImages] = useState<ImageResProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [outputsCount, setOutputsCount] = useState<number>(1);
 
-  const fetchImages = useCallback(
-    async (userLoad: boolean) => {
-      if (userLoad) setLoading(true);
-      if (status === "loading") return;
-      if (status === "unauthenticated") {
-        setError("User email not available");
-        setLoading(false);
-        return;
+  const fetchImages = async (userLoad: boolean) => {
+    if (userLoad) setLoading(true);
+    if (status === "loading") return;
+    if (status === "unauthenticated") {
+      setError("User email not available");
+      setLoading(false);
+      t("User not signed in", "error");
+      return;
+    }
+    console.log("Fetching images");
+    try {
+      const response = await getAllImages();
+      if (response.success && response.data) {
+        setImages(response.data);
+        if (userLoad) t("Images fetched successfully", "success");
+      } else {
+        setError(response.message || "Failed to fetch images");
       }
-
-      try {
-        const response = await getAllImages();
-        if (response.success && response.data) {
-          setImages(response.data);
-        } else {
-          setError(response.message || "Failed to fetch images");
-        }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [status]
-  );
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchImages(false);
@@ -68,6 +75,10 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         error,
         refetch: fetchImages,
+        isGenerating,
+        setIsGenerating,
+        outputsCount,
+        setOutputsCount,
       }}
     >
       {children}

@@ -1,16 +1,17 @@
 "use client";
 
-import { LoaderCircle, RefreshCcw } from "lucide-react";
+import { LoaderCircle, RefreshCcw, Star } from "lucide-react";
 import { useImages } from "@/hooks/useImages";
-import { useGeneration } from "@/hooks/useGeneration";
 import ImageComponent from "./ImageComponent";
 import { AnimatePresence, motion } from "framer-motion";
 import { saveImage, deleteImage } from "@/app/actions/saveDeleteImage";
 import Link from "next/link";
+import { useUser } from "@/hooks/useUser";
 
 const ImagePreview = () => {
-  const { images, loading, error, refetch } = useImages();
-  const { outputsCount, isGenerating } = useGeneration();
+  const { images, loading, error, refetch, outputsCount, isGenerating } =
+    useImages();
+  const { user } = useUser();
 
   const renderContent = () => {
     if (loading) {
@@ -88,7 +89,7 @@ const ImagePreview = () => {
 
   return (
     <div className="w-full h-[calc(100vh-56px)] flex flex-col ">
-      <div className="bg-black flex justify-between items-center px-4 py-4 border-b border-gray-800 sticky top-0 right-0 z-50">
+      <div className="bg-black flex justify-between items-center px-4 py-4 border-b border-gray-800 sticky top-0 right-0 z-10">
         <div className="font-bold text-lg flex justify-center items-center gap-2">
           Your Creations{" "}
           <button onClick={() => refetch(true)}>
@@ -96,6 +97,10 @@ const ImagePreview = () => {
           </button>
         </div>
         <div className="flex space-x-4">
+          <span className="text-gray-400 flex justify-center items-center">
+            Credits left: {user.credits}{" "}
+            <Star size={18} className="text-yellow-500 ml-px" fill="#eab308" />
+          </span>
           <Link href="/create">
             <span>All</span>
           </Link>

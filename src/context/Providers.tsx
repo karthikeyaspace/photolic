@@ -2,15 +2,15 @@
 
 import React from "react";
 import { SessionProvider } from "next-auth/react";
-import { ImageGenerationProvider } from "./ImageGenerationProvider";
 import { ImageProvider } from "./ImageProvider";
+import { UserProvider } from "./UserProvider";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <SessionProvider>
-      <ImageProvider>
-        <ImageGenerationProvider>{children}</ImageGenerationProvider>
-      </ImageProvider>
+      <UserProvider>
+        <ImageProvider>{children}</ImageProvider>
+      </UserProvider>
     </SessionProvider>
   );
 };

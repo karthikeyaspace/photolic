@@ -14,3 +14,4 @@ store api key of user in local storage - choice
 - add infinite scroll loading
 - credits
 - change places, etc to text from drom down
+- check out the refetch glitch

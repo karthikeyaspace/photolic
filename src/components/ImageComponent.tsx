@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Save, Trash2, X } from "lucide-react";
+import { Download, Save, Trash2, X } from "lucide-react";
 
 interface ImageResProps {
   id: string;
@@ -51,14 +51,17 @@ export default function Component({
         }}
         transition={{ duration: 0.5 }}
       >
-        <img
-          src={image.url}
-          className="w-full h-full object-cover"
-          alt={image.prompt}
-        />
+        <img src={image.url} className="w-full h-full object-cover" />
       </motion.div>
       <div className="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-transparent to-black/50">
         <div className="flex justify-end space-x-2">
+          <a
+            href={image.url}
+            download
+            className="p-2 bg-gray-800/80 rounded-full hover:bg-gray-700/80 transition-colors"
+          >
+            <Download className="w-5 h-5 text-white" />
+          </a>
           <button
             className="p-2 bg-gray-800/80 rounded-full hover:bg-gray-700/80 transition-colors"
             disabled={image.isSaved}
@@ -98,7 +101,6 @@ export default function Component({
           >
             <img
               src={image.url}
-              alt={image.prompt}
               className="max-w-full max-h-full object-contain"
               onClick={(e) => e.stopPropagation()}
             />
