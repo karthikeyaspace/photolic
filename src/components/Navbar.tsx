@@ -1,15 +1,26 @@
 "use client";
 
 import React, { useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { motion } from "framer-motion";
-import { LogOut, Key } from "lucide-react";
+import { LogOut, Key, Trash } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
+import t from "@/lib/Toast";
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { user } = useUser();
-  const handleApiKeyClick = () => {};
+  const { user, session, setApiKeyDiv, setApiKey } = useUser();
+  const handleApiKeyDiv = () => {
+    setShowMenu(false);
+    setApiKeyDiv(true);
+  };
+
+  const handleRemoveApiKey = () => {
+    localStorage.removeItem("phokey");
+    setApiKey("");
+    setShowMenu(false);
+    t("API key removed from your localstorage", "info");
+  };
 
   return (
     <div className="h-14 px-6 flex justify-between items-center border-b border-gray-800">
@@ -18,16 +29,25 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center relative">
-        <img
-          src={
-            user.image ||
-            "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
-          }
-          className="w-10 h-10 rounded-full cursor-pointer z-50"
-          onClick={() => setShowMenu(!showMenu)}
-        />
+        {session && (
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            className="flex items-center space-x-2 text-gray-200 hover:text-white"
+          >
+            {user.name && user.image && (
+              <>
+                <span>{user?.name}</span>
+                <img
+                  src={user?.image}
+                  alt="User profile"
+                  className="w-8 h-8 rounded-full"
+                />
+              </>
+            )}
+          </button>
+        )}
 
-        {showMenu && (
+        {showMenu && session && (
           <motion.div
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -36,11 +56,18 @@ const Navbar = () => {
           >
             <div className="flex flex-col space-y-2">
               <button
-                onClick={handleApiKeyClick}
+                onClick={handleApiKeyDiv}
                 className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"
               >
                 <Key size={16} className="mr-2" />
                 Setup API Key
+              </button>
+              <button
+                onClick={handleRemoveApiKey}
+                className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"
+              >
+                <Trash size={16} className="mr-2" />
+                Remove API Key
               </button>
               <button
                 onClick={() => signOut()}

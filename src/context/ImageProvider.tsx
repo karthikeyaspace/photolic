@@ -5,18 +5,19 @@ import { getAllImages } from "@/app/actions/getAllImages";
 import { ImageResProps } from "@/lib/types";
 import { useSession } from "next-auth/react";
 import t from "@/lib/Toast";
+import { saveImage, deleteImage } from "@/app/actions/saveDeleteImage";
 
 interface ImageContextType {
   images: ImageResProps[];
-  addImages: (newImages: ImageResProps[]) => void;
   loading: boolean;
   error: string | null;
   refetch: (userLoad: boolean) => Promise<void>;
-
   isGenerating: boolean;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   outputsCount: number;
   setOutputsCount: React.Dispatch<React.SetStateAction<number>>;
+  saveImageC: (id: string) => void;
+  deleteImageC: (id: string) => void;
 }
 
 export const ImageContext = createContext<ImageContextType | undefined>(
@@ -37,12 +38,10 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
     if (userLoad) setLoading(true);
     if (status === "loading") return;
     if (status === "unauthenticated") {
-      setError("User email not available");
+      setError("Please sign in to view images");
       setLoading(false);
-      t("User not signed in", "error");
       return;
     }
-    console.log("Fetching images");
     try {
       const response = await getAllImages();
       if (response.success && response.data) {
@@ -50,9 +49,11 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
         if (userLoad) t("Images fetched successfully", "success");
       } else {
         setError(response.message || "Failed to fetch images");
+        t(response.message || "Failed to fetch images", "error");
       }
     } catch (err: any) {
       setError(err.message);
+      t("Some error happened", "error");
     } finally {
       setLoading(false);
     }
@@ -62,16 +63,29 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchImages(false);
   }, [status]);
 
-  const addImages = (newImages: ImageResProps[]) => {
-    newImages.reverse();
-    setImages((prevImages) => [...newImages, ...prevImages]);
+  const saveImageC = (id: string) => {
+    setImages((prev) => {
+      return prev.map((image) => {
+        if (image.id === id) {
+          return { ...image, isSaved: !image.isSaved };
+        }
+        return image;
+      });
+    });
+    saveImage(id);
+  };
+
+  const deleteImageC = (id: string) => {
+    setImages((prev) => {
+      return prev.filter((image) => image.id !== id);
+    });
+    deleteImage(id);
   };
 
   return (
     <ImageContext.Provider
       value={{
         images,
-        addImages,
         loading,
         error,
         refetch: fetchImages,
@@ -79,6 +93,8 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
         setIsGenerating,
         outputsCount,
         setOutputsCount,
+        saveImageC,
+        deleteImageC,
       }}
     >
       {children}

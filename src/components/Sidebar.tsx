@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Camera, ChevronDown, Star } from "lucide-react";
 import { SidebarFormTypes } from "@/lib/types";
 import {
@@ -19,7 +19,9 @@ import t from "@/lib/Toast";
 const Sidebar = () => {
   const { isGenerating, setIsGenerating, setOutputsCount, refetch } =
     useImages();
-  const { user, updateCredits } = useUser();
+  const { user, updateCredits, setApiKeyDiv, apiKey } = useUser();
+  const [useSeed, setUseSeed] = useState(false);
+
   const [state, setState] = useState<SidebarFormTypes>({
     model: "black-forest-labs/flux-schnell",
     prompt: "",
@@ -33,8 +35,13 @@ const Sidebar = () => {
     aspectRatio: "1:1",
     seed: Math.floor(Math.random() * 1000000),
     disableSafetyChecker: false,
+    useApiKey: !!apiKey,
+    apiKey: "",
   });
-  const [useSeed, setUseSeed] = useState(false);
+
+  useEffect(() => {
+    setState((prev) => ({ ...prev, apiKey: apiKey }));
+  }, [apiKey]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -47,18 +54,32 @@ const Sidebar = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsGenerating(true);
+    if (
+      (user.credits < state.numOutputs || user.credits <= 0) &&
+      !state.useApiKey
+    ) {
+      t("Insufficient credits, cannot generate images", "info");
+      return;
+    }
+    if (state.useApiKey && !apiKey) {
+      setApiKeyDiv(true);
+      t("Please enter your API key", "info");
+      return;
+    }
+    console.log(apiKey);
+
     setOutputsCount(state.numOutputs);
-    if (state.prompt === "") return;
+    setIsGenerating(true);
     try {
       const res = await generateImages(state);
       if (res.success) {
         t("Images generated successfully", "success");
-        updateCredits(user.credits - state.numOutputs);
+        if (!state.useApiKey) updateCredits(user.credits - state.numOutputs);
         refetch(false);
       } else t(res.message || "Failed to generate images", "error");
     } catch (err) {
       console.log(err);
+      t("Failed to generate images", "error");
     }
     setIsGenerating(false);
   };
@@ -146,7 +167,7 @@ const Sidebar = () => {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-sm font-semibold mb-2">CAMERA POSITION (BETA)</h3>
+        <h3 className="text-sm font-semibold mb-2">CAMERA POSITION</h3>
         <div className="bg-[#2C2C2C] rounded relative">
           <select
             name="cameraPosition"
@@ -275,6 +296,22 @@ const Sidebar = () => {
         </label>
       </div>
 
+      <div className="flex items-center mb-4">
+        <input
+          type="checkbox"
+          id="apiKey"
+          name="apiKey"
+          checked={state.useApiKey}
+          onChange={(e) => {
+            setState((prev) => ({ ...prev, useApiKey: e.target.checked }));
+          }}
+          className="mr-2"
+        />
+        <label htmlFor="apiKey" className="text-sm">
+          Use my API key
+        </label>
+      </div>
+
       <button
         type="submit"
         disabled={isGenerating}
@@ -284,7 +321,8 @@ const Sidebar = () => {
       >
         <Camera className="mr-2" size={18} />
         Generate {state.numOutputs} photo{state.numOutputs > 1 && "s"} (~
-        {state.numOutputs * 2.5}s) <p className="ml-4 ">{state.numOutputs}</p>
+        {state.numOutputs * 2.5}s){" "}
+        <p className="ml-4 ">{!state.useApiKey ? state.numOutputs : 0}</p>
         <Star size={18} className="text-yellow-500 ml-px" fill="#eab308" />
       </button>
     </motion.form>

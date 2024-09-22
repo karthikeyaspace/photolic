@@ -5,7 +5,7 @@ const t = (msg: string, type: "success" | "error" | "info") => {
     duration: 3000,
     position: "bottom-right",
     style: {
-      backgroundColor: type === "success" ? "#0072f5" : type === "error" ? "#ff990a" : "#d93036",
+      backgroundColor: type === "success" ? "#0072f5" : type === "error" ? "#d93036" : "#ff990a",
       color: type === "error" ? "black" : "white",
       padding: "5px",
       paddingLeft: "15px",

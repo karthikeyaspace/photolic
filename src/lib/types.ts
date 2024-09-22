@@ -11,6 +11,8 @@ interface SidebarFormTypes {
   aspectRatio: string;
   seed: number;
   disableSafetyChecker: boolean;
+  useApiKey: boolean;
+  apiKey?: string;
 }
 
 interface ImageResProps {

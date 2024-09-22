@@ -3,6 +3,7 @@ import Sidebar from "@/components/Sidebar";
 import ImagePreview from "@/components/ImagesPreview";
 import { getServerSessionAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import SetApiKey from "@/components/SetApiKey";
 
 const CreatePage = async () => {
   const session = await getServerSessionAuth();
@@ -17,6 +18,7 @@ const CreatePage = async () => {
       <div className="w-[70%]  overflow-y-auto small-scrollbar ">
         <ImagePreview />
       </div>
+      <SetApiKey />
     </div>
   );
 };

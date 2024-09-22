@@ -4,13 +4,20 @@ import { LoaderCircle, RefreshCcw, Star } from "lucide-react";
 import { useImages } from "@/hooks/useImages";
 import ImageComponent from "./ImageComponent";
 import { AnimatePresence, motion } from "framer-motion";
-import { saveImage, deleteImage } from "@/app/actions/saveDeleteImage";
 import Link from "next/link";
 import { useUser } from "@/hooks/useUser";
 
 const ImagePreview = () => {
-  const { images, loading, error, refetch, outputsCount, isGenerating } =
-    useImages();
+  const {
+    images,
+    loading,
+    error,
+    refetch,
+    outputsCount,
+    isGenerating,
+    saveImageC,
+    deleteImageC,
+  } = useImages();
   const { user } = useUser();
 
   const renderContent = () => {
@@ -74,10 +81,10 @@ const ImagePreview = () => {
                 image={image}
                 isGenerating={false}
                 onSave={() => {
-                  saveImage(image.id);
+                  saveImageC(image.id);
                 }}
                 onDelete={() => {
-                  deleteImage(image.id);
+                  deleteImageC(image.id);
                 }}
               />
             </motion.div>
@@ -99,7 +106,11 @@ const ImagePreview = () => {
         <div className="flex space-x-4">
           <span className="text-gray-400 flex justify-center items-center">
             Credits left: {user.credits}{" "}
-            <Star size={18} className="text-yellow-500 ml-px" fill="#eab308" />
+            <Star
+              size={18}
+              className="text-yellow-500 ml-px mb-[3px]"
+              fill="#eab308"
+            />
           </span>
           <Link href="/create">
             <span>All</span>

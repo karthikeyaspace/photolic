@@ -8,25 +8,33 @@ const getUserDetails = async () => {
   const userEmail = session?.user?.email;
   if (!userEmail || !session)
     return { success: false, message: "User not found" };
-  const user = await prisma.user.findUnique({
-    where: { email: userEmail },
-    select: {
-      name: true,
-      email: true,
-      image: true,
-      credits: true,
-    },
-  });
-  if (!user) return { success: false, message: "User not found" };
-  return { success: true, data: user };
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
+      select: {
+        name: true,
+        email: true,
+        image: true,
+        credits: true,
+      },
+    });
+    if (!user) return { success: false, message: "User not found" };
+    return { success: true, data: user };
+  } catch (error) {
+    return { success: false, message: "Failed to fetch user" };
+  }
 };
 
 const updateUserCredits = async (email: string, credits: number) => {
-  const user = await prisma.user.update({
-    where: { email },
-    data: { credits },
-  });
-  return { success: true, data: user };
+  try {
+    const user = await prisma.user.update({
+      where: { email },
+      data: { credits },
+    });
+    return { success: true, data: user };
+  } catch (error) {
+    return { success: false, message: "Failed to update credits" };
+  }
 };
 
 export { getUserDetails, updateUserCredits };
