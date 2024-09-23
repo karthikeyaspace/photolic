@@ -34,15 +34,13 @@ const Navbar = () => {
             onClick={() => setShowMenu(!showMenu)}
             className="flex items-center space-x-2 text-gray-200 hover:text-white"
           >
-            {user.name && user.image && (
-              <>
-                <span>{user?.name}</span>
-                <img
-                  src={user?.image}
-                  alt="User profile"
-                  className="w-8 h-8 rounded-full"
-                />
-              </>
+            <span>{user?.name}</span>
+            {user.image && (
+              <img
+                src={user?.image}
+                alt="User profile"
+                className="w-8 h-8 rounded-full"
+              />
             )}
           </button>
         )}
