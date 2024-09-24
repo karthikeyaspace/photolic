@@ -1,6 +1,11 @@
 "use client";
 
-import { LoaderCircle, RefreshCcw, Star } from "lucide-react";
+import {
+  ArrowBigRightDash,
+  LoaderCircle,
+  RefreshCcw,
+  Star,
+} from "lucide-react";
 import { useImages } from "@/hooks/useImages";
 import ImageComponent from "./ImageComponent";
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,7 +23,7 @@ const ImagePreview = () => {
     saveImageC,
     deleteImageC,
   } = useImages();
-  const { user } = useUser();
+  const { user, setShowSideBar } = useUser();
 
   const renderContent = () => {
     if (loading) {
@@ -37,11 +42,11 @@ const ImagePreview = () => {
       return (
         <div className="flex flex-col justify-center items-center h-full">
           <p className="text-gray-400">Create your first image</p>
-          <p>
+          <p className="flex items-center justify-center gap-1">
             "a cat eating cake spread all over its face"{" "}
             <span
-              onClick={() => console.log("building")}
-              className="bg-blue-600 px-2 py-1 cursor-pointer rounded-sm"
+              onClick={() => setShowSideBar(true)}
+              className="bg-blue-600 px-2 text-sm cursor-pointer rounded-sm"
             >
               Run
             </span>{" "}
@@ -95,36 +100,32 @@ const ImagePreview = () => {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-56px)] flex flex-col ">
-      <div className="bg-black flex justify-between items-center px-4 py-4 border-b border-gray-800 sticky top-0 right-0 z-10">
-        <div className="font-bold text-lg flex justify-center items-center gap-2">
+    <div className="w-full min-h-[calc(100vh-56px)] flex flex-col ">
+      <div className="bg-black h-12 flex justify-between items-center pr-4 md:px-4 border-b border-gray-800 sticky top-0 right-0 z-10">
+        <div
+          className="bg-blue-600 flex md:hidden rounded-tr rounded-br px-3  gap-1"
+          onClick={() => setShowSideBar(true)}
+        >
+          Build <ArrowBigRightDash />
+        </div>
+
+        <div className="text-md flex justify-center items-center gap-2">
           Your Creations{" "}
           <button onClick={() => refetch(true)}>
-            <RefreshCcw size={20} />
+            <RefreshCcw size={18} />
           </button>
         </div>
-        <div className="flex space-x-4">
-          <span className="text-gray-400 flex justify-center items-center">
-            Credits left: {user.credits}{" "}
-            <Star
-              size={18}
-              className="text-yellow-500 ml-px mb-[3px]"
-              fill="#eab308"
-            />
-          </span>
-          <Link href="/create">
-            <span>All</span>
-          </Link>
-          <Link href="/create?state=saved">
-            <span>Saved</span>
-          </Link>
-          <Link href="/create?state=deleted">
-            <span>Deleted</span>
-          </Link>
-        </div>
+        <span className="text-gray-400 flex justify-center items-center">
+          {user.credits}{" "}
+          <Star
+            size={18}
+            className="text-yellow-500 ml-px mb-[3px]"
+            fill="#eab308"
+          />
+        </span>
       </div>
 
-      <div className="flex-grow p-4 h-[calc(100vh-112px)] overflow-y-auto small-scrollbar ">
+      <div className="min-h-calc[100vh-104px] p-4 overflow-y-auto small-scrollbar ">
         {renderContent()}
       </div>
     </div>

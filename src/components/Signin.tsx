@@ -19,7 +19,7 @@ const Signin = () => {
     try {
       await signIn("google", { callbackUrl: "/create" });
     } catch (error) {
-      console.error("Failed to sign in:", error);
+      console.error("Failed to sign in");
     }
   };
 

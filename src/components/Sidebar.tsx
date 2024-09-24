@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Camera, ChevronDown, Star } from "lucide-react";
+import { ArrowLeftFromLineIcon, Camera, ChevronDown, Star } from "lucide-react";
 import { SidebarFormTypes } from "@/lib/types";
 import {
   models,
@@ -20,7 +20,8 @@ import t from "@/lib/Toast";
 const Sidebar = () => {
   const { isGenerating, setIsGenerating, setOutputsCount, refetch } =
     useImages();
-  const { user, updateCredits, setApiKeyDiv, apiKey } = useUser();
+  const { user, updateCredits, setApiKeyDiv, apiKey, setShowSideBar } =
+    useUser();
   const [useSeed, setUseSeed] = useState(false);
 
   const [prompt, setPrompt] = useState({
@@ -92,6 +93,7 @@ const Sidebar = () => {
       t("Please enter your API key", "info");
       return;
     }
+    if (window.innerWidth < 768) setShowSideBar((prev) => !prev);
     setOutputsCount(state.numOutputs);
     setIsGenerating(true);
     try {
@@ -100,7 +102,9 @@ const Sidebar = () => {
         t("Images generated successfully", "success");
         if (!state.useApiKey) updateCredits(user.credits - state.numOutputs);
         refetch(false);
-      } else t(res.message || "Failed to generate images", "error");
+      } else {
+        t(res.message || "Failed to generate images", "error");
+      }
     } catch (err) {
       console.log(err);
       t("Failed to generate images", "error");
@@ -108,7 +112,8 @@ const Sidebar = () => {
     setIsGenerating(false);
   };
 
-  const handleReset = () => {
+  const handleReset = (e: any) => {
+    e.preventDefault();
     setPrompt({
       text: "",
       emotion: emotions[0],
@@ -164,10 +169,16 @@ const Sidebar = () => {
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.2 }}
       onSubmit={handleFormSubmit}
-      className="p-6 bg-black text-white h-full flex flex-col overflow-y-auto small-scrollbar space-y-6"
+      className="px-6 py-10 pb-16 md:py-6 bg-black text-white h-full flex flex-col overflow-y-auto small-scrollbar space-y-6 z-30"
     >
       <div className="mb-6">
         <h3 className="text-sm font-semibold mb-2">MODEL</h3>
+        <div
+          className="absolute top-3 right-6 block md:hidden z-30 p-1 rounded-full"
+          onClick={() => setShowSideBar(false)}
+        >
+          <ArrowLeftFromLineIcon />
+        </div>
         <div className="bg-[#2C2C2C] rounded relative">
           <select
             name="model"
@@ -260,7 +271,7 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-4">
         <h3 className="text-sm font-semibold mb-2">SEED NUMBER</h3>
         <div className="flex items-center mb-2">
           <input
@@ -285,10 +296,6 @@ const Sidebar = () => {
             className="bg-[#2C2C2C] w-full outline-none px-3 h-10 rounded"
           />
         )}
-      </div>
-
-      <div className="text-sm text-blue-400 mb-6 cursor-pointer">
-        Find other photos with this seed
       </div>
 
       <div className="flex items-center mb-4">

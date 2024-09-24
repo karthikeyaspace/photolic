@@ -42,6 +42,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
       },
     });
 
+
     // const output: {} = [
     //   // "https://replicate.delivery/yhqm/YqT3k2fXEekEc0Y7OIQ2f87X7YwxFSvRuqeaXcBN6fgiuEbbC/out-0.webp",
     //   "https://replicate.delivery/yhqm/kyPeqr5fbJjVVEtFcc1FNaoRmQTlI4rMGXEujiIkKazDex2mA/out-0.webp",

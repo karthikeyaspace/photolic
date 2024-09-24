@@ -9,7 +9,7 @@ import t from "@/lib/Toast";
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { user, session, setApiKeyDiv, setApiKey } = useUser();
+  const { user, session, setApiKeyDiv, setApiKey, apiKey } = useUser();
   const handleApiKeyDiv = () => {
     setShowMenu(false);
     setApiKeyDiv(true);
@@ -34,13 +34,12 @@ const Navbar = () => {
             onClick={() => setShowMenu(!showMenu)}
             className="flex items-center space-x-2 text-gray-200 hover:text-white"
           >
-            <span>{user?.name}</span>
-            {user.image && (
-              <img
-                src={user?.image}
-                alt="User profile"
-                className="w-8 h-8 rounded-full"
-              />
+            {user.image ? (
+              <img src={user.image} className="w-8 h-8 rounded-full" />
+            ) : (
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-500 text-white">
+                {user.name[0]}
+              </div>
             )}
           </button>
         )}
@@ -58,15 +57,17 @@ const Navbar = () => {
                 className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"
               >
                 <Key size={16} className="mr-2" />
-                Setup API Key
+                {apiKey ? "Update" : "Setup"} API Key
               </button>
-              <button
-                onClick={handleRemoveApiKey}
-                className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"
-              >
-                <Trash size={16} className="mr-2" />
-                Remove API Key
-              </button>
+              {apiKey && (
+                <button
+                  onClick={handleRemoveApiKey}
+                  className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"
+                >
+                  <Trash size={16} className="mr-2" />
+                  Remove API Key
+                </button>
+              )}
               <button
                 onClick={() => signOut()}
                 className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"

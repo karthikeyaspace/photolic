@@ -23,6 +23,8 @@ interface UserContextTypes {
   apiKey?: string;
   setApiKey: React.Dispatch<React.SetStateAction<string>>;
   updateCredits: (credits: number) => void;
+  showSideBar: boolean;
+  setShowSideBar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const UserContext = createContext<UserContextTypes | undefined>(
@@ -34,6 +36,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const { data: session, status } = useSession();
   const [apiKeyDiv, setApiKeyDiv] = useState(false);
+  const [showSideBar, setShowSideBar] = useState(true);
   const [apiKey, setApiKey] = useState<string>("");
   const [user, setUser] = useState<User>({
     name: "",
@@ -83,6 +86,8 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         apiKey,
         setApiKey,
         updateCredits,
+        showSideBar,
+        setShowSideBar,
       }}
     >
       {children}

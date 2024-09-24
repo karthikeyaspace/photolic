@@ -38,15 +38,15 @@ const SetApiKey = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-20 p-4"
+          transition={{ duration: 0.1 }}
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
           onClick={() => setApiKeyDiv(false)}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             className="bg-gray-800 p-6 sm:p-8 rounded-md w-full max-w-md relative"
             onClick={(e) => e.stopPropagation()}
           >
