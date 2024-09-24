@@ -9,7 +9,6 @@ import {
 import { useImages } from "@/hooks/useImages";
 import ImageComponent from "./ImageComponent";
 import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
 import { useUser } from "@/hooks/useUser";
 
 const ImagePreview = () => {
@@ -43,13 +42,13 @@ const ImagePreview = () => {
         <div className="flex flex-col justify-center items-center h-full">
           <p className="text-gray-400">Create your first image</p>
           <p className="flex items-center justify-center gap-1">
-            "a cat eating cake spread all over its face"{" "}
+            a cat eating cake spread all over its face 
             <span
               onClick={() => setShowSideBar(true)}
               className="bg-blue-600 px-2 text-sm cursor-pointer rounded-sm"
             >
               Run
-            </span>{" "}
+            </span>
           </p>
         </div>
       );

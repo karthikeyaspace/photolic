@@ -1,6 +1,6 @@
 "use server";
 
-import { SidebarFormTypes } from "@/lib/types";
+import { ImageDBType, SidebarFormTypes } from "@/lib/types";
 import Replicate from "replicate";
 import { getServerSessionAuth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -55,7 +55,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
       return { success: false, message: "Failed to generate Images" };
 
     const imageuris = output as string[];
-    let data: any[] = [];
+    const data: ImageDBType[] = [];
     imageuris.forEach((uri) => {
       data.push({
         userId: user.id,

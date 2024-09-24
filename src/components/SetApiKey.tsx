@@ -87,7 +87,7 @@ const SetApiKey = () => {
             </form>
             <p className="text-xs leading-relaxed mt-4 text-gray-400">
               <Shield className="inline-block mr-1 h-4 w-4" />
-              Your API key is securely stored in your browser's local storage
+              Your API key is securely stored in your browsers local storage
               and is never sent to our servers.
             </p>
             <a

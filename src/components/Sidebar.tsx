@@ -112,7 +112,7 @@ const Sidebar = () => {
     setIsGenerating(false);
   };
 
-  const handleReset = (e: any) => {
+  const handleReset = (e: React.FormEvent) => {
     e.preventDefault();
     setPrompt({
       text: "",

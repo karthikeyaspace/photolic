@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, createContext, useCallback } from "react";
+import React, { useState, useEffect, createContext } from "react";
 import { getAllImages } from "@/app/actions/getAllImages";
 import { ImageResProps } from "@/lib/types";
 import { useSession } from "next-auth/react";
@@ -27,7 +27,7 @@ export const ImageContext = createContext<ImageContextType | undefined>(
 const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [images, setImages] = useState<ImageResProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,9 +51,8 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
         setError(response.message || "Failed to fetch images");
         t(response.message || "Failed to fetch images", "error");
       }
-    } catch (err: any) {
-      setError(err.message);
-      t("Some error happened", "error");
+    } catch (error) {
+      t("Failed to fetch Images", "error");
     } finally {
       setLoading(false);
     }

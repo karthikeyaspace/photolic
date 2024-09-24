@@ -20,4 +20,14 @@ interface ImageResProps {
   isSaved: boolean;
 }
 
-export type { SidebarFormTypes, ImageResProps };
+interface ImageDBType {
+  userId: string;
+  url: string;
+  seed: number;
+  prompt: string;
+  aspectRatio: string;
+  model: string;
+  disableSafetyChecker: boolean;
+}
+
+export type { SidebarFormTypes, ImageResProps, ImageDBType };
