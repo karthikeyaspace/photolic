@@ -25,6 +25,17 @@ const aspectRatios = [
   "9:16",
   "9:21",
 ];
+const lightingOptions = [
+  "",
+  "Natural",
+  "Soft",
+  "Harsh",
+  "Studio",
+  "Dramatic",
+  "Moody",
+  "Bright",
+  "Dark",
+];
 
 const cameraPositions = [
   "",
@@ -42,16 +53,23 @@ const cameraPositions = [
 
 const places = [
   "",
-  "Eiffel Tower, Paris, France",
-  "Great Wall of China, Beijing, China",
-  "Statue of Liberty, New York, USA",
-  "Colosseum, Rome, Italy",
-  "Machu Picchu, Cusco, Peru",
-  "Sydney Opera House, Sydney, Australia",
-  "Taj Mahal, Agra, India",
-  "Christ the Redeemer, Rio de Janeiro, Brazil",
-  "Santorini, Thira, Greece",
-  "Pyramids of Giza, Cairo, Egypt",
+  "Eiffel Tower",
+  "Great Wall of China",
+  "Statue of Liberty",
+  "Colosseum",
+  "Machu Picchu",
+  "Sydney Opera House",
+  "Taj Mahal",
+  "Christ the Redeemer",
+  "Santorini",
+  "Pyramids of Giza",
 ];
 
-export { models, emotions, cameraPositions, places, aspectRatios };
+export {
+  models,
+  emotions,
+  cameraPositions,
+  places,
+  aspectRatios,
+  lightingOptions,
+};

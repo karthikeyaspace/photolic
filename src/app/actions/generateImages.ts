@@ -10,11 +10,6 @@ const generateImages = async (formData: SidebarFormTypes) => {
     auth: formData.useApiKey ? formData.apiKey : process.env.REPLICATE_API_KEY,
   });
 
-  console.log(
-    "key",
-    formData.useApiKey ? formData.apiKey : process.env.REPLICATE_API_KEY
-  );
-
   const session = await getServerSessionAuth();
   const userEmail = session?.user?.email;
   if (!userEmail || !session)
@@ -37,7 +32,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
     const output = await replicate.run("black-forest-labs/flux-schnell", {
       input: {
         seed: formData.seed,
-        prompt: `${formData.prompt}, ${formData.emotion}, ${formData.cameraPosition}, ${formData.place} 8k DSLR photorealistic quality`,
+        prompt: formData.prompt,
         go_fast: true,
         num_outputs: Number(formData.numOutputs),
         aspect_ratio: formData.aspectRatio,
@@ -65,7 +60,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
         userId: user.id,
         url: uri,
         seed: formData.seed,
-        prompt: `${formData.prompt}, ${formData.emotion}, ${formData.cameraPosition}, ${formData.place} 8k DSLR photorealistic quality`,
+        prompt: formData.prompt,
         aspectRatio: formData.aspectRatio,
         model: "black-forest-labs/flux-schnell",
         disableSafetyChecker: formData.disableSafetyChecker,

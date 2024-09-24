@@ -9,6 +9,7 @@ import {
   cameraPositions,
   places,
   aspectRatios,
+  lightingOptions,
 } from "@/lib/constants";
 import { generateImages } from "@/app/actions/generateImages";
 import { useImages } from "@/hooks/useImages";
@@ -22,13 +23,18 @@ const Sidebar = () => {
   const { user, updateCredits, setApiKeyDiv, apiKey } = useUser();
   const [useSeed, setUseSeed] = useState(false);
 
-  const [state, setState] = useState<SidebarFormTypes>({
-    model: "black-forest-labs/flux-schnell",
-    prompt: "",
-    creativity: "50",
+  const [prompt, setPrompt] = useState({
+    text: "",
     emotion: emotions[0],
     cameraPosition: cameraPositions[0],
     place: places[0],
+    lighting: lightingOptions[0],
+    additionalDetails: "",
+  });
+
+  const [state, setState] = useState<SidebarFormTypes>({
+    model: "black-forest-labs/flux-schnell",
+    prompt: "",
     numOutputs: 1,
     outputQuality: 75,
     outputFormat: "webp",
@@ -43,6 +49,17 @@ const Sidebar = () => {
     setState((prev) => ({ ...prev, apiKey: apiKey }));
   }, [apiKey]);
 
+  useEffect(() => {
+    const generatedPrompt = `${prompt.text} ${
+      prompt.emotion && "with " + prompt.emotion + " expression,"
+    } ${prompt.cameraPosition && prompt.cameraPosition + " view,"}${
+      prompt.place && "in " + prompt.place + ", "
+    } ${prompt.lighting && prompt.lighting + " lighting. "} ${
+      prompt.additionalDetails
+    } 8K DSLR photorealistic quality`.trim();
+    setState((prev) => ({ ...prev, prompt: generatedPrompt }));
+  }, [prompt]);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
@@ -50,6 +67,15 @@ const Sidebar = () => {
   ) => {
     const { name, value } = e.target;
     setState((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePromptChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setPrompt((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -66,8 +92,6 @@ const Sidebar = () => {
       t("Please enter your API key", "info");
       return;
     }
-    console.log(apiKey);
-
     setOutputsCount(state.numOutputs);
     setIsGenerating(true);
     try {
@@ -84,6 +108,56 @@ const Sidebar = () => {
     setIsGenerating(false);
   };
 
+  const handleReset = () => {
+    setPrompt({
+      text: "",
+      emotion: emotions[0],
+      cameraPosition: cameraPositions[0],
+      place: places[0],
+      lighting: lightingOptions[0],
+      additionalDetails: "",
+    });
+
+    setState({
+      model: "black-forest-labs/flux-schnell",
+      prompt: "",
+      numOutputs: 1,
+      outputQuality: 75,
+      outputFormat: "webp",
+      aspectRatio: "1:1",
+      seed: Math.floor(Math.random() * 1000000),
+      disableSafetyChecker: false,
+      useApiKey: !!apiKey,
+      apiKey: "",
+    });
+  };
+
+  const selectComponent = (name: string, label: string, options: string[]) => {
+    return (
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold mb-2">{label}</h3>
+        <div className="bg-[#2C2C2C] rounded relative">
+          <select
+            name={name}
+            value={prompt[name as keyof typeof prompt]}
+            onChange={handlePromptChange}
+            className="bg-transparent w-full outline-none appearance-none px-3 h-10"
+          >
+            {options.map((option) => (
+              <option key={option} value={option} className="bg-gray-800">
+                {option}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+            size={18}
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <motion.form
       initial={{ opacity: 0, x: -10 }}
@@ -96,7 +170,7 @@ const Sidebar = () => {
         <h3 className="text-sm font-semibold mb-2">MODEL</h3>
         <div className="bg-[#2C2C2C] rounded relative">
           <select
-            name="emotion"
+            name="model"
             value={state.model}
             onChange={handleChange}
             className="bg-transparent w-full outline-none appearance-none px-3 h-10"
@@ -113,14 +187,19 @@ const Sidebar = () => {
           />
         </div>
       </div>
+
+      <button className="py-1 w-1/4 bg-blue-700 rounded" onClick={handleReset}>
+        Reset
+      </button>
+
       <h2 className="text-sm font-semibold mb-2">
         WHAT DO YOU WANT TO CREATE? (PROMPT)
       </h2>
       <div className="bg-[#2C2C2C] border border-blue-500 rounded mb-6">
         <textarea
-          name="prompt"
-          value={state.prompt}
-          onChange={handleChange}
+          name="text"
+          value={prompt.text}
+          onChange={handlePromptChange}
           placeholder="a photo of a cat eating popsicle"
           rows={3}
           required
@@ -128,86 +207,21 @@ const Sidebar = () => {
         />
       </div>
 
+      {selectComponent("emotion", "EMOTION", emotions)}
+      {selectComponent("cameraPosition", "CAMERA POSITION", cameraPositions)}
+      {selectComponent("place", "PLACE", places)}
+      {selectComponent("lighting", "LIGHTING", lightingOptions)}
+
       <div className="mb-6">
-        <h3 className="text-sm font-semibold mb-2">
-          CREATIVITY VS. RESEMBLANCE
-        </h3>
-        <input
-          type="range"
-          name="creativity"
-          value={state.creativity}
-          onChange={handleChange}
-          className="w-full appearance-none bg-[#2C2C2C] h-10 rounded-md"
-          style={{
-            background: `linear-gradient(to right, #3b82f6 ${state.creativity}%, #2C2C2C ${state.creativity}%)`,
-          }}
+        <h3 className="text-sm font-semibold mb-2">ADDITIONAL DETAILS</h3>
+        <textarea
+          name="additionalDetails"
+          value={prompt.additionalDetails}
+          onChange={handlePromptChange}
+          placeholder="Add any additional details"
+          rows={2}
+          className="bg-[#2C2C2C] w-full outline-none p-3  rounded "
         />
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold mb-2">EMOTION</h3>
-        <div className="bg-[#2C2C2C] rounded relative">
-          <select
-            name="emotion"
-            value={state.emotion}
-            onChange={handleChange}
-            className="bg-transparent w-full outline-none appearance-none px-3 h-10"
-          >
-            {emotions.map((emotion) => (
-              <option key={emotion} value={emotion} className="bg-gray-800">
-                {emotion}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            className="absolute right-3 top-1/2 transform -translate-y-1/2"
-            size={18}
-          />
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold mb-2">CAMERA POSITION</h3>
-        <div className="bg-[#2C2C2C] rounded relative">
-          <select
-            name="cameraPosition"
-            value={state.cameraPosition}
-            onChange={handleChange}
-            className="bg-transparent w-full outline-none appearance-none px-3 h-10"
-          >
-            {cameraPositions.map((position) => (
-              <option key={position} value={position} className="bg-gray-800">
-                {position}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            className="absolute right-3 top-1/2 transform -translate-y-1/2"
-            size={18}
-          />
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold mb-2">PLACE</h3>
-        <div className="bg-[#2C2C2C] rounded relative">
-          <select
-            name="place"
-            value={state.place}
-            onChange={handleChange}
-            className="bg-transparent w-full outline-none appearance-none px-3 h-10"
-          >
-            {places.map((place) => (
-              <option key={place} value={place} className="bg-gray-800">
-                {place}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            className="absolute right-3 top-1/2 transform -translate-y-1/2"
-            size={18}
-          />
-        </div>
       </div>
 
       <div className="mb-6">

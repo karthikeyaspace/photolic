@@ -1,10 +1,6 @@
 interface SidebarFormTypes {
   model: "black-forest-labs/flux-schnell" | "black-forest-labs/flux-dev";
   prompt: string;
-  creativity: string;
-  emotion: string;
-  cameraPosition: string;
-  place: string;
   numOutputs: number;
   outputQuality: number;
   outputFormat: "webp" | "png" | "jpg";

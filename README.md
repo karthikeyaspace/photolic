@@ -12,6 +12,8 @@
 <!-- - add toast and check the flow of all response messages -->
 <!-- - saved and deleted photos display -->
 - add infinite scroll loading
+responsive side bar
+
 <!-- - credits -->
 <!-- - check out the refetch glitch -->
 <!-- - api key component -->
