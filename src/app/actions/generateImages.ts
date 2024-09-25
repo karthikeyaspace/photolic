@@ -42,6 +42,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
       },
     });
 
+    // await new Promise((resolve) => setTimeout(resolve, 4000));
 
     // const output: {} = [
     //   // "https://replicate.delivery/yhqm/YqT3k2fXEekEc0Y7OIQ2f87X7YwxFSvRuqeaXcBN6fgiuEbbC/out-0.webp",
@@ -72,7 +73,25 @@ const generateImages = async (formData: SidebarFormTypes) => {
       data: data,
     });
 
-    return { success: true, message: "Images generated successfully" };
+    const recentlyAdded = await prisma.generation.findMany({
+      where: { userId: user.id },
+      select: {
+        id: true,
+        url: true,
+        prompt: true,
+        aspectRatio: true,
+        model: true,
+        isSaved: true,
+      },
+      orderBy: { count: "desc" },
+      take: Number(formData.numOutputs),
+    });
+
+    return {
+      success: true,
+      message: "Images generated successfully",
+      data: recentlyAdded,
+    };
   } catch (error) {
     return {
       success: false,

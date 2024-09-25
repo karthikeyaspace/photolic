@@ -18,6 +18,7 @@ interface ImageContextType {
   setOutputsCount: React.Dispatch<React.SetStateAction<number>>;
   saveImageC: (id: string) => void;
   deleteImageC: (id: string) => void;
+  addImages: (newImages: ImageResProps[]) => void;
 }
 
 export const ImageContext = createContext<ImageContextType | undefined>(
@@ -81,6 +82,10 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
     deleteImage(id);
   };
 
+  const addImages = (newImages: ImageResProps[]) => {
+    setImages((prev) => [...newImages, ...prev]);
+  };
+
   return (
     <ImageContext.Provider
       value={{
@@ -94,6 +99,7 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
         setOutputsCount,
         saveImageC,
         deleteImageC,
+        addImages,
       }}
     >
       {children}

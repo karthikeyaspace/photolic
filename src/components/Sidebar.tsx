@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ArrowLeftFromLineIcon, Camera, ChevronDown, Star } from "lucide-react";
-import { SidebarFormTypes } from "@/lib/types";
+import { ImageResProps, SidebarFormTypes } from "@/lib/types";
 import {
   models,
   emotions,
@@ -18,7 +18,7 @@ import { motion } from "framer-motion";
 import t from "@/lib/Toast";
 
 const Sidebar = () => {
-  const { isGenerating, setIsGenerating, setOutputsCount, refetch } =
+  const { isGenerating, setIsGenerating, setOutputsCount, addImages } =
     useImages();
   const { user, updateCredits, setApiKeyDiv, apiKey, setShowSideBar } =
     useUser();
@@ -101,7 +101,8 @@ const Sidebar = () => {
       if (res.success) {
         t("Images generated successfully", "success");
         if (!state.useApiKey) updateCredits(user.credits - state.numOutputs);
-        refetch(false);
+        setIsGenerating(false);
+        addImages(res.data as ImageResProps[]);
       } else {
         t(res.message || "Failed to generate images", "error");
       }
