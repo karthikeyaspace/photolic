@@ -31,7 +31,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
   try {
     const output = await replicate.run("black-forest-labs/flux-schnell", {
       input: {
-        seed: formData.seed,
+        seed: Number(formData.seed),
         prompt: formData.prompt,
         go_fast: true,
         num_outputs: Number(formData.numOutputs),
@@ -42,8 +42,8 @@ const generateImages = async (formData: SidebarFormTypes) => {
       },
     });
 
-    // await new Promise((resolve) => setTimeout(resolve, 4000));
 
+    // // for testing
     // const output: {} = [
     //   // "https://replicate.delivery/yhqm/YqT3k2fXEekEc0Y7OIQ2f87X7YwxFSvRuqeaXcBN6fgiuEbbC/out-0.webp",
     //   "https://replicate.delivery/yhqm/kyPeqr5fbJjVVEtFcc1FNaoRmQTlI4rMGXEujiIkKazDex2mA/out-0.webp",
@@ -61,7 +61,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
       data.push({
         userId: user.id,
         url: uri,
-        seed: formData.seed,
+        seed: Number(formData.seed),
         prompt: formData.prompt,
         aspectRatio: formData.aspectRatio,
         model: "black-forest-labs/flux-schnell",
@@ -79,6 +79,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
         id: true,
         url: true,
         prompt: true,
+        seed: true,
         aspectRatio: true,
         model: true,
         isSaved: true,

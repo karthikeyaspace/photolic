@@ -15,6 +15,7 @@ interface ImageResProps {
   id: string;
   url: string;
   prompt: string;
+  seed: number; 
   aspectRatio: string;
   model: string;
   isSaved: boolean;

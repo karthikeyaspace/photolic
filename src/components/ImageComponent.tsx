@@ -3,15 +3,7 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Download, Save, Trash2, X } from "lucide-react";
-
-interface ImageResProps {
-  id: string;
-  url: string;
-  prompt: string;
-  aspectRatio: string;
-  model: string;
-  isSaved: boolean;
-}
+import { ImageResProps } from "@/lib/types";
 
 export default function Component({
   image,
@@ -37,6 +29,7 @@ export default function Component({
       }
     });
   }
+  console.log(image);
 
   return (
     <motion.div
@@ -99,6 +92,9 @@ export default function Component({
             className="fixed inset-0 flex items-center justify-center z-50 bg-black/80"
             onClick={() => setShowDetails(false)}
           >
+            <p className="absolute top-4 left-4 text-sm text-white text-center px-1 bg-black/50 rounded">
+              {image.model.split('/')[1] + " seed:" + image.seed}
+            </p>
             <img
               src={image.url}
               className="max-w-full max-h-full object-contain"

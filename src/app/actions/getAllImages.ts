@@ -7,7 +7,7 @@ const getAllImages = async () => {
   const session = await getServerSessionAuth();
   if (!session || !session?.user?.email)
     return { success: false, message: "User not authenticated" };
-  
+
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
     select: { id: true },
@@ -21,6 +21,7 @@ const getAllImages = async () => {
         id: true,
         url: true,
         prompt: true,
+        seed: true,
         aspectRatio: true,
         isSaved: true,
         model: true,

@@ -79,6 +79,7 @@ const Sidebar = () => {
     setPrompt((prev) => ({ ...prev, [name]: value }));
   };
 
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (

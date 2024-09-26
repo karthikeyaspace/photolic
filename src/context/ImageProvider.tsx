@@ -46,7 +46,7 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await getAllImages();
       if (response.success && response.data) {
-        setImages(response.data);
+        setImages(response.data as ImageResProps[]);
         if (userLoad) t("Images fetched successfully", "success");
       } else {
         setError(response.message || "Failed to fetch images");
