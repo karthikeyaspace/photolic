@@ -58,9 +58,9 @@ Requirements for the software and other tools to build, test, and push:
 
 1. Ensure **Docker Desktop** is installed.
 2. Start Docker desktop to start docker engine
-```bash
-start "C:\Program Files\Docker\Docker\Docker Desktop.exe"
-```
+    ```bash
+    start "C:\Program Files\Docker\Docker\Docker Desktop.exe"
+    ```
 3. Pull and run the latest PostgreSQL image using Docker:
     ```bash
     docker pull postgres:latest
