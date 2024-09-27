@@ -2,6 +2,13 @@
 
 Photolic is an AI-powered photorealistic image generator that uses the *FLUX-schnell* model via the Replicate API.
 
+![image](https://github.com/user-attachments/assets/c38e9d19-dfc8-4595-ad4e-ed25344e92b8) 
+
+
+![image](https://github.com/user-attachments/assets/c9b46604-adb4-4e20-9590-0896c7bce529)
+
+
+
 ### Tech Stack
 
 - **Frontend**: Next.js
