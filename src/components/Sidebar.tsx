@@ -279,18 +279,18 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="mb-4">
-        <div className="flex justify-start items-center mb-2 gap-2">
-          <h3 className="text-sm font-semibold">SEED NUMBER</h3>
-          <RefreshCw
-            size={16}
-            onClick={() => {
-              setState((prev) => ({ ...prev, seed: getSeed() }));
-            }}
-            className="cursor-pointer"
-          />
-        </div>
-        <div className="flex items-center mb-2">
+      <div>
+          <h3 className="text-sm font-semibold flex justify-start items-center gap-2 mb-2">
+            SEED NUMBER
+            <RefreshCw
+              size={16}
+              onClick={() => {
+                setState((prev) => ({ ...prev, seed: getSeed() }));
+              }}
+              className="cursor-pointer"
+            />
+          </h3>
+        <div className="flex items-center">
           <input
             type="checkbox"
             id="useSeed"
@@ -315,7 +315,7 @@ const Sidebar = () => {
         )}
       </div>
 
-      <div className="flex items-center mb-4">
+      {/* <div className="flex items-center mb-4">
         <input
           type="checkbox"
           id="disableSafetyChecker"
@@ -332,7 +332,7 @@ const Sidebar = () => {
         <label htmlFor="disableSafetyChecker" className="text-sm">
           Disable safety checker
         </label>
-      </div>
+      </div> */}
 
       <div className="flex items-center mb-4">
         <input
