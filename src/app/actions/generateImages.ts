@@ -42,7 +42,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
       },
     });
 
-
+    // console.log(formData)
     // // for testing
     // const output: {} = [
     //   // "https://replicate.delivery/yhqm/YqT3k2fXEekEc0Y7OIQ2f87X7YwxFSvRuqeaXcBN6fgiuEbbC/out-0.webp",

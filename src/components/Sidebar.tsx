@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ArrowLeftFromLineIcon, Camera, ChevronDown, Star } from "lucide-react";
+import {
+  ArrowLeftFromLineIcon,
+  Camera,
+  ChevronDown,
+  RefreshCw,
+  Star,
+} from "lucide-react";
 import { ImageResProps, SidebarFormTypes } from "@/lib/types";
 import {
   models,
@@ -16,6 +22,7 @@ import { useImages } from "@/hooks/useImages";
 import { useUser } from "@/hooks/useUser";
 import { motion } from "framer-motion";
 import t from "@/lib/Toast";
+import { getSeed } from "@/lib/utils";
 
 const Sidebar = () => {
   const { isGenerating, setIsGenerating, setOutputsCount, addImages } =
@@ -40,7 +47,7 @@ const Sidebar = () => {
     outputQuality: 75,
     outputFormat: "webp",
     aspectRatio: "1:1",
-    seed: Math.floor(Math.random() * 1000000),
+    seed: getSeed(),
     disableSafetyChecker: false,
     useApiKey: !!apiKey,
     apiKey: "",
@@ -78,7 +85,6 @@ const Sidebar = () => {
     const { name, value } = e.target;
     setPrompt((prev) => ({ ...prev, [name]: value }));
   };
-
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -274,7 +280,16 @@ const Sidebar = () => {
       </div>
 
       <div className="mb-4">
-        <h3 className="text-sm font-semibold mb-2">SEED NUMBER</h3>
+        <div className="flex justify-start items-center mb-2 gap-2">
+          <h3 className="text-sm font-semibold">SEED NUMBER</h3>
+          <RefreshCw
+            size={16}
+            onClick={() => {
+              setState((prev) => ({ ...prev, seed: getSeed() }));
+            }}
+            className="cursor-pointer"
+          />
+        </div>
         <div className="flex items-center mb-2">
           <input
             type="checkbox"
