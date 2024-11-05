@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useEffect } from "react";
-import { getUserDetails, updateUserCredits } from "@/app/actions/userAction";
+import { getUserDetails } from "@/app/actions/userAction";
 import t from "@/lib/Toast";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
