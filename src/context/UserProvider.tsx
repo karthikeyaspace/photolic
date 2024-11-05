@@ -66,11 +66,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [status]);
 
   const updateCredits = async (credits: number) => {
-    const response = await updateUserCredits(user.email, credits);
-    if (!response.success) {
-      t("Failed to update credits", "error");
-      return;
-    }
     setUser({ ...user, credits });
   };
 

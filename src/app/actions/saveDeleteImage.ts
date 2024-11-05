@@ -27,6 +27,8 @@ const saveImage = async (imageId: string) => {
   }
 };
 
+// unsave image
+
 const deleteImage = async (imageId: string) => {
   const session = await getServerSessionAuth();
   if (!session || !session?.user?.email)

@@ -4,6 +4,7 @@ import { ImageDBType, SidebarFormTypes } from "@/lib/types";
 import Replicate from "replicate";
 import { getServerSessionAuth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { updateUserCredits } from "./userAction";
 
 const generateImages = async (formData: SidebarFormTypes) => {
   const replicate = new Replicate({
@@ -42,12 +43,10 @@ const generateImages = async (formData: SidebarFormTypes) => {
       },
     });
 
-    // console.log(formData)
-    // // for testing
     // const output: {} = [
     //   // "https://replicate.delivery/yhqm/YqT3k2fXEekEc0Y7OIQ2f87X7YwxFSvRuqeaXcBN6fgiuEbbC/out-0.webp",
     //   "https://replicate.delivery/yhqm/kyPeqr5fbJjVVEtFcc1FNaoRmQTlI4rMGXEujiIkKazDex2mA/out-0.webp",
-    //   "https://replicate.delivery/yhqm/u8ytQNN5qA7CCJfhrAZT66SFoLpY6X0voJsLgWhz2Cq7XwtJA/out-0.webp",
+    //   // "https://replicate.delivery/yhqm/u8ytQNN5qA7CCJfhrAZT66SFoLpY6X0voJsLgWhz2Cq7XwtJA/out-0.webp",
     //   // "https://replicate.delivery/yhqm/5KAmBeSNi92pFCdvjWz5qYv1Ulnb3kHWFdeaajvjTew8Mp7mA/out-0.webp",
     //   // "https://replicate.delivery/yhqm/dfp8t0dGqvzPRSDywMQBnD0bzFgyJ1iDuvI2J4uWUZKOVstJA/out-0.webp",
     // ];
@@ -88,10 +87,17 @@ const generateImages = async (formData: SidebarFormTypes) => {
       take: Number(formData.numOutputs),
     });
 
+    if (!formData.useApiKey) {
+      await updateUserCredits(userEmail, user.credits - formData.numOutputs);
+    }
+
     return {
       success: true,
       message: "Images generated successfully",
       data: recentlyAdded,
+      newCredits: !formData.useApiKey
+        ? user.credits - formData.numOutputs
+        : user.credits,
     };
   } catch (error) {
     return {

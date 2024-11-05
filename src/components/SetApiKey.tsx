@@ -39,7 +39,7 @@ const SetApiKey = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.1 }}
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
           onClick={() => setApiKeyDiv(false)}
         >
           <motion.div
@@ -47,7 +47,7 @@ const SetApiKey = () => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="bg-gray-800 p-6 sm:p-8 rounded-md w-full max-w-md relative"
+            className="bg-gray-800 p-4 sm:p-5 rounded-md w-full max-w-md relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -87,8 +87,8 @@ const SetApiKey = () => {
             </form>
             <p className="text-xs leading-relaxed mt-4 text-gray-400">
               <Shield className="inline-block mr-1 h-4 w-4" />
-              Your API key is securely stored in your browsers local storage
-              and is never sent to our servers.
+              Your API key is securely stored in your browsers local storage and
+              is never stored in our servers.
             </p>
             <a
               href="https://replicate.com/account/api-tokens"

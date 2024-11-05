@@ -18,7 +18,6 @@ export const metadata: Metadata = {
     "digital art",
   ],
   authors: { url: "https://itskv.me", name: "Karthikeya Veruturi" },
-  viewport: "width=device-width, initial-scale=1.0",
   robots: "index, follow",
   openGraph: {
     title: "Photolic - AI Photo Generator",

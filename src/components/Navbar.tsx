@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { signOut } from "next-auth/react";
 import { motion } from "framer-motion";
-import { LogOut, Key, Trash } from "lucide-react";
+import { LogOut, Key, Trash, PlusCircle } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import t from "@/lib/Toast";
 
@@ -59,6 +59,7 @@ const Navbar = () => {
                 <Key size={16} className="mr-2" />
                 {apiKey ? "Update" : "Setup"} API Key
               </button>
+
               {apiKey && (
                 <button
                   onClick={handleRemoveApiKey}
@@ -68,6 +69,12 @@ const Navbar = () => {
                   Remove API Key
                 </button>
               )}
+
+              <button className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150">
+                <PlusCircle size={16} className="mr-2" />
+                Add Credits
+              </button>
+
               <button
                 onClick={() => signOut()}
                 className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"

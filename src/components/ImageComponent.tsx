@@ -29,8 +29,6 @@ export default function Component({
       }
     });
   }
-  console.log(image);
-
   return (
     <motion.div
       className="w-full h-96 relative group overflow-hidden rounded-lg cursor-pointer"
@@ -92,8 +90,9 @@ export default function Component({
             className="fixed inset-0 flex items-center justify-center z-50 bg-black/80"
             onClick={() => setShowDetails(false)}
           >
-            <p className="absolute top-4 left-4 text-sm text-white text-center px-1 bg-black/50 rounded">
-              {image.model.split('/')[1] + " seed:" + image.seed}
+            <p className="absolute top-4 left-4 text-sm text-white px-1 bg-black/50 rounded">
+              <p>{image.model.split("/")[1]}</p>
+              <p>{"seed: " + image.seed}</p>
             </p>
             <img
               src={image.url}

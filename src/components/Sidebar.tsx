@@ -107,12 +107,12 @@ const Sidebar = () => {
       const res = await generateImages(state);
       if (res.success) {
         t("Images generated successfully", "success");
-        if (!state.useApiKey) updateCredits(user.credits - state.numOutputs);
-        setIsGenerating(false);
         addImages(res.data as ImageResProps[]);
+        if (res.newCredits) updateCredits(res.newCredits);
       } else {
         t(res.message || "Failed to generate images", "error");
       }
+      setIsGenerating(false);
     } catch (err) {
       console.log(err);
       t("Failed to generate images", "error");
@@ -280,16 +280,16 @@ const Sidebar = () => {
       </div>
 
       <div>
-          <h3 className="text-sm font-semibold flex justify-start items-center gap-2 mb-2">
-            SEED NUMBER
-            <RefreshCw
-              size={16}
-              onClick={() => {
-                setState((prev) => ({ ...prev, seed: getSeed() }));
-              }}
-              className="cursor-pointer"
-            />
-          </h3>
+        <h3 className="text-sm font-semibold flex justify-start items-center gap-2 mb-2">
+          SEED NUMBER
+          <RefreshCw
+            size={16}
+            onClick={() => {
+              setState((prev) => ({ ...prev, seed: getSeed() }));
+            }}
+            className="cursor-pointer"
+          />
+        </h3>
         <div className="flex items-center">
           <input
             type="checkbox"
