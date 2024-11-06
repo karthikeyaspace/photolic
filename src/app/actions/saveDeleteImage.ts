@@ -8,13 +8,6 @@ const saveImage = async (imageId: string) => {
   if (!session || !session?.user?.email)
     return { success: false, message: "User not authenticated" };
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { id: true },
-  });
-
-  if (!user) return { success: false, message: "User not found" };
-
   try {
     await prisma.generation.update({
       where: { id: imageId },
@@ -29,17 +22,28 @@ const saveImage = async (imageId: string) => {
 
 // unsave image
 
+const unsaveImage = async (imageId: string) => {
+  const session = await getServerSessionAuth();
+  if (!session || !session?.user?.email)
+    return { success: false, message: "User not authenticated" };
+
+  try{
+    await prisma.generation.update({
+      where: { id: imageId },
+      data: { isSaved: false },
+    })
+    return { success: true, message: "Image unsaved successfully" };
+  }
+  catch (error) {
+    return { success: false, message: "Failed to unsave image" };
+  }
+}
+
 const deleteImage = async (imageId: string) => {
   const session = await getServerSessionAuth();
   if (!session || !session?.user?.email)
     return { success: false, message: "User not authenticated" };
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    select: { id: true },
-  });
-
-  if (!user) return { success: false, message: "User not found" };
   try {
     await prisma.generation.update({
       where: { id: imageId },
@@ -51,4 +55,4 @@ const deleteImage = async (imageId: string) => {
   }
 };
 
-export { saveImage, deleteImage };
+export { saveImage, deleteImage, unsaveImage };

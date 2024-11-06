@@ -49,13 +49,13 @@ export default function Component({
           <a
             href={image.url}
             download
+            onClick={(e) => e.stopPropagation()}
             className="p-2 bg-gray-800/80 rounded-full hover:bg-gray-700/80 transition-colors"
           >
             <Download className="w-5 h-5 text-white" />
           </a>
           <button
             className="p-2 bg-gray-800/80 rounded-full hover:bg-gray-700/80 transition-colors"
-            disabled={image.isSaved}
             onClick={(e) => {
               e.stopPropagation();
               onSave(image);

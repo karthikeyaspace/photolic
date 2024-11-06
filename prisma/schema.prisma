@@ -16,7 +16,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   generations   Generation[]
-  credits       Int          @default(1)
+  credits       Int          @default(1)  
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 }

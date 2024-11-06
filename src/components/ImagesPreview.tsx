@@ -27,19 +27,19 @@ const ImagePreview = () => {
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center h-[calc(100vh-10rem)]">
           <LoaderCircle className="w-12 h-12 text-white animate-spin" />
         </div>
       );
     }
 
     if (error) {
-      return <p className="flex justify-center items-center h-full">{error}</p>;
+      return <p className="flex justify-center items-center h-[calc(100vh-10rem)]">{error}</p>;
     }
 
     if (images.length === 0 && !isGenerating) {
       return (
-        <div className="flex flex-col justify-center items-center h-full">
+        <div className="flex flex-col justify-center items-center h-[calc(100vh-10rem)]">
           <p className="text-gray-400">Create your first image</p>
           <p className="flex items-center justify-center gap-1">
             a cat eating cake spread all over its face
@@ -85,7 +85,7 @@ const ImagePreview = () => {
                 image={image}
                 isGenerating={false}
                 onSave={() => {
-                  saveImageC(image.id);
+                  saveImageC(image.id, image.isSaved ? false : true);
                 }}
                 onDelete={() => {
                   deleteImageC(image.id);

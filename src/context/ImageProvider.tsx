@@ -5,7 +5,11 @@ import { getAllImages } from "@/app/actions/getAllImages";
 import { ImageResProps } from "@/lib/types";
 import { useSession } from "next-auth/react";
 import t from "@/lib/Toast";
-import { saveImage, deleteImage } from "@/app/actions/saveDeleteImage";
+import {
+  saveImage,
+  unsaveImage,
+  deleteImage,
+} from "@/app/actions/saveDeleteImage";
 
 interface ImageContextType {
   images: ImageResProps[];
@@ -16,7 +20,7 @@ interface ImageContextType {
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   outputsCount: number;
   setOutputsCount: React.Dispatch<React.SetStateAction<number>>;
-  saveImageC: (id: string) => void;
+  saveImageC: (id: string, save: boolean) => void;
   deleteImageC: (id: string) => void;
   addImages: (newImages: ImageResProps[]) => void;
 }
@@ -63,7 +67,7 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchImages(false);
   }, [status]);
 
-  const saveImageC = (id: string) => {
+  const saveImageC = (id: string, save: boolean) => {
     setImages((prev) => {
       return prev.map((image) => {
         if (image.id === id) {
@@ -72,7 +76,8 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
         return image;
       });
     });
-    saveImage(id);
+    if (save) saveImage(id);
+    else unsaveImage(id);
   };
 
   const deleteImageC = (id: string) => {
