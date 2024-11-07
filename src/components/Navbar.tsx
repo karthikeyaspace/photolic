@@ -72,7 +72,9 @@ const Navbar = () => {
 
               <button className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150">
                 <PlusCircle size={16} className="mr-2" />
-                Add Credits
+                <a href="https://itskv.me" target="_blank">
+                  Add Credits
+                </a>
               </button>
 
               <button
