@@ -42,7 +42,7 @@ export default function Component({
         }}
         transition={{ duration: 0.6 }}
       >
-        <img src={image.url} className="w-full h-full object-cover" />
+        <img src={image.url} alt="user generation" className="w-full h-full object-cover" />
       </motion.div>
       <div className="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-transparent to-black/50">
         <div className="flex justify-end space-x-2">
@@ -96,6 +96,7 @@ export default function Component({
             </p>
             <img
               src={image.url}
+              alt="user generation"
               className="max-w-full max-h-full object-contain"
               onClick={(e) => e.stopPropagation()}
             />

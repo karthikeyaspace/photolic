@@ -1,8 +1,6 @@
 "use client";
 
 import React, { createContext, useState, useEffect } from "react";
-import { getUserDetails } from "@/app/actions/userAction";
-import t from "@/lib/Toast";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 
@@ -48,8 +46,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const lkey = localStorage.getItem("phokey");
     if (lkey) setApiKey(lkey);
   }, []);
-
-
 
   return (
     <UserContext.Provider

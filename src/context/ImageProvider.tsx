@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, createContext } from "react";
 import { getAllImages } from "@/app/actions/getAllImages";
 import { ImageResProps } from "@/lib/types";
 import { useSession } from "next-auth/react";

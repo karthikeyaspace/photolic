@@ -10,8 +10,7 @@ import { getUserDetails } from "@/app/actions/userAction";
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { user, setUser, session, setApiKeyDiv, setApiKey, apiKey, status } =
-    useUser();
+  const { user, setUser, session, setApiKeyDiv, setApiKey, apiKey } = useUser();
   const handleApiKeyDiv = () => {
     setShowMenu(false);
     setApiKeyDiv(true);
@@ -51,12 +50,8 @@ const Navbar = () => {
             onClick={() => setShowMenu(!showMenu)}
             className="flex items-center space-x-2 text-gray-200 hover:text-white"
           >
-            {user.image ? (
-              <img src={user.image} className="w-8 h-8 rounded-full" />
-            ) : (
-              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-blue-500 text-white">
-                {user.name[0]}
-              </div>
+            {user.image && (
+              <img src={user.image} alt="User image" className="w-8 h-8 rounded-full" />
             )}
           </button>
         )}
