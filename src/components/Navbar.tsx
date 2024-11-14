@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { motion } from "framer-motion";
 import { LogOut, Key, Trash, PlusCircle } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import t from "@/lib/Toast";
+import { getUserDetails } from "@/app/actions/userAction";
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { user, session, setApiKeyDiv, setApiKey, apiKey } = useUser();
+  const { user, setUser, session, setApiKeyDiv, setApiKey, apiKey, status } =
+    useUser();
   const handleApiKeyDiv = () => {
     setShowMenu(false);
     setApiKeyDiv(true);
@@ -21,6 +23,21 @@ const Navbar = () => {
     setShowMenu(false);
     t("API key removed from your localstorage", "info");
   };
+
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await getUserDetails();
+      if (response.success && response.data) {
+        setUser({
+          name: response.data.name || "",
+          email: response.data.email,
+          image: response.data.image || "",
+          credits: response.data.credits,
+        });
+      } else t(response.message || "Failed to get user", "error");
+    };
+    getUser();
+  }, []);
 
   return (
     <div className="h-14 px-6 flex justify-between items-center border-b border-gray-800">

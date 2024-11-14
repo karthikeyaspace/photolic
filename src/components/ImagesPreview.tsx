@@ -8,21 +8,25 @@ import {
 } from "lucide-react";
 import { useImages } from "@/hooks/useImages";
 import ImageComponent from "./ImageComponent";
-import { AnimatePresence, motion } from "framer-motion";
 import { useUser } from "@/hooks/useUser";
+import { useEffect } from "react";
 
 const ImagePreview = () => {
   const {
     images,
     loading,
     error,
-    refetch,
+    fetchImages,
     outputsCount,
     isGenerating,
     saveImageC,
     deleteImageC,
   } = useImages();
-  const { user, setShowSideBar } = useUser();
+  const { user, setShowSideBar, status } = useUser();
+
+  useEffect(() => {
+    fetchImages(false);
+  }, [status]);
 
   const renderContent = () => {
     if (loading) {
@@ -34,7 +38,11 @@ const ImagePreview = () => {
     }
 
     if (error) {
-      return <p className="flex justify-center items-center h-[calc(100vh-10rem)]">{error}</p>;
+      return (
+        <p className="flex justify-center items-center h-[calc(100vh-10rem)]">
+          {error}
+        </p>
+      );
     }
 
     if (images.length === 0 && !isGenerating) {
@@ -72,27 +80,19 @@ const ImagePreview = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {skeletonLoaderContent}
         {images.map((image, index) => (
-          <AnimatePresence key={index}>
-            <motion.div
-              key={`skeleton-${index}`}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
-              <ImageComponent
-                key={image.id}
-                image={image}
-                isGenerating={false}
-                onSave={() => {
-                  saveImageC(image.id, image.isSaved ? false : true);
-                }}
-                onDelete={() => {
-                  deleteImageC(image.id);
-                }}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <div key={`skeleton-${index}`}>
+            <ImageComponent
+              key={image.id}
+              image={image}
+              isGenerating={false}
+              onSave={() => {
+                saveImageC(image.id, image.isSaved ? false : true);
+              }}
+              onDelete={() => {
+                deleteImageC(image.id);
+              }}
+            />
+          </div>
         ))}
       </div>
     );
@@ -110,7 +110,7 @@ const ImagePreview = () => {
 
         <div className="text-md flex justify-center items-center gap-2">
           Your Creations{" "}
-          <button onClick={() => refetch(true)}>
+          <button onClick={() => fetchImages(true)}>
             <RefreshCcw size={18} />
           </button>
         </div>

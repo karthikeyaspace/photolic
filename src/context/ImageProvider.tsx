@@ -15,7 +15,7 @@ interface ImageContextType {
   images: ImageResProps[];
   loading: boolean;
   error: string | null;
-  refetch: (userLoad: boolean) => Promise<void>;
+  fetchImages: (userLoad: boolean) => Promise<void>;
   isGenerating: boolean;
   setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
   outputsCount: number;
@@ -63,10 +63,6 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  useEffect(() => {
-    fetchImages(false);
-  }, [status]);
-
   const saveImageC = (id: string, save: boolean) => {
     setImages((prev) => {
       return prev.map((image) => {
@@ -97,7 +93,7 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
         images,
         loading,
         error,
-        refetch: fetchImages,
+        fetchImages,
         isGenerating,
         setIsGenerating,
         outputsCount,

@@ -49,20 +49,7 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     if (lkey) setApiKey(lkey);
   }, []);
 
-  useEffect(() => {
-    const getUser = async () => {
-      const response = await getUserDetails();
-      if (response.success && response.data) {
-        setUser({
-          name: response.data.name || "",
-          email: response.data.email,
-          image: response.data.image || "",
-          credits: response.data.credits,
-        });
-      } else t(response.message || "Failed to get user", "error");
-    };
-    if (status === "authenticated") getUser();
-  }, [status]);
+
 
   return (
     <UserContext.Provider

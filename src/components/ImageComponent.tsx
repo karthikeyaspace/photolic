@@ -38,9 +38,9 @@ export default function Component({
       <motion.div
         className="absolute inset-0"
         variants={{
-          hover: { scale: 1.02 },
+          hover: { scale: 1.03 },
         }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.6 }}
       >
         <img src={image.url} className="w-full h-full object-cover" />
       </motion.div>
