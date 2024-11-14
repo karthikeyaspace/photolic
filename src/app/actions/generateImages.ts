@@ -1,12 +1,21 @@
 "use server";
 
-import { ImageDBType, SidebarFormTypes } from "@/lib/types";
+import {
+  ImageDBType,
+  SidebarFormTypes,
+  GenerationResponseTypes,
+} from "@/lib/types";
 import Replicate from "replicate";
 import { getServerSessionAuth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { updateUserCredits } from "./userAction";
+import { v4 } from "uuid";
 
-const generateImages = async (formData: SidebarFormTypes) => {
+const MODEL_NAME = "black-forest-labs/flux-schnell";
+
+const generateImages = async (
+  formData: SidebarFormTypes
+): Promise<GenerationResponseTypes> => {
   const replicate = new Replicate({
     auth: formData.useApiKey ? formData.apiKey : process.env.REPLICATE_API_KEY,
   });
@@ -19,7 +28,9 @@ const generateImages = async (formData: SidebarFormTypes) => {
     where: { email: userEmail },
     select: { id: true, credits: true },
   });
+
   if (!user) return { success: false, message: "User not found" };
+
   if (
     (user.credits < formData.numOutputs || user.credits <= 0) &&
     !formData.useApiKey
@@ -30,7 +41,7 @@ const generateImages = async (formData: SidebarFormTypes) => {
     };
 
   try {
-    const output = await replicate.run("black-forest-labs/flux-schnell", {
+    const output = await replicate.run(MODEL_NAME, {
       input: {
         seed: Number(formData.seed),
         prompt: formData.prompt,
@@ -51,13 +62,15 @@ const generateImages = async (formData: SidebarFormTypes) => {
     //   // "https://replicate.delivery/yhqm/dfp8t0dGqvzPRSDywMQBnD0bzFgyJ1iDuvI2J4uWUZKOVstJA/out-0.webp",
     // ];
 
-    if (!output)
+    if (!output || !Array.isArray(output))
       return { success: false, message: "Failed to generate Images" };
 
     const imageuris = output as string[];
+
     const data: ImageDBType[] = [];
     imageuris.forEach((uri) => {
       data.push({
+        id: v4(),
         userId: user.id,
         url: uri,
         seed: Number(formData.seed),
@@ -68,28 +81,23 @@ const generateImages = async (formData: SidebarFormTypes) => {
       });
     });
 
-    await prisma.generation.createMany({
-      data: data,
-    });
-
-    const recentlyAdded = await prisma.generation.findMany({
-      where: { userId: user.id },
-      select: {
-        id: true,
-        url: true,
-        prompt: true,
-        seed: true,
-        aspectRatio: true,
-        model: true,
-        isSaved: true,
-      },
-      orderBy: { count: "desc" },
-      take: Number(formData.numOutputs),
-    });
+    uploadToDb(data);
 
     if (!formData.useApiKey) {
-      await updateUserCredits(userEmail, user.credits - formData.numOutputs);
+      updateUserCredits(userEmail, user.credits - formData.numOutputs);
     }
+
+    const recentlyAdded = data.map((image) => {
+      return {
+        id: image.id,
+        url: image.url,
+        prompt: image.prompt,
+        seed: image.seed,
+        aspectRatio: image.aspectRatio,
+        model: image.model,
+        isSaved: false,
+      };
+    });
 
     return {
       success: true,
@@ -105,6 +113,12 @@ const generateImages = async (formData: SidebarFormTypes) => {
       message: "Failed to generate Images, API error",
     };
   }
+};
+
+const uploadToDb = async (data: ImageDBType[]) => {
+  await prisma.generation.createMany({
+    data: data,
+  });
 };
 
 export { generateImages };

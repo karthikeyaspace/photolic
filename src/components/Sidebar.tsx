@@ -27,8 +27,7 @@ import { getSeed } from "@/lib/utils";
 const Sidebar = () => {
   const { isGenerating, setIsGenerating, setOutputsCount, addImages } =
     useImages();
-  const { user, updateCredits, setApiKeyDiv, apiKey, setShowSideBar } =
-    useUser();
+  const { user, setUser, setApiKeyDiv, apiKey, setShowSideBar } = useUser();
   const [useSeed, setUseSeed] = useState(false);
 
   const [prompt, setPrompt] = useState({
@@ -106,9 +105,11 @@ const Sidebar = () => {
     try {
       const res = await generateImages(state);
       if (res.success) {
+        console.log(res);
         t("Images generated successfully", "success");
         addImages(res.data as ImageResProps[]);
-        if (res.newCredits) updateCredits(res.newCredits);
+        const nc = res.newCredits;
+        if (nc !== undefined) setUser((prev) => ({ ...prev, credits: nc }));
       } else {
         t(res.message || "Failed to generate images", "error");
       }

@@ -21,7 +21,15 @@ interface ImageResProps {
   isSaved: boolean;
 }
 
+type GenerationResponseTypes = {
+  success: boolean;
+  message: string;
+  data?: Array<ImageResProps>;
+  newCredits?: number;
+};
+
 interface ImageDBType {
+  id: string;
   userId: string;
   url: string;
   seed: number;
@@ -31,4 +39,4 @@ interface ImageDBType {
   disableSafetyChecker: boolean;
 }
 
-export type { SidebarFormTypes, ImageResProps, ImageDBType };
+export type { SidebarFormTypes, ImageResProps, ImageDBType, GenerationResponseTypes };

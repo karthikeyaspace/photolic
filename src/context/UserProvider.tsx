@@ -22,7 +22,6 @@ interface UserContextTypes {
   setApiKeyDiv: React.Dispatch<React.SetStateAction<boolean>>;
   apiKey?: string;
   setApiKey: React.Dispatch<React.SetStateAction<string>>;
-  updateCredits: (credits: number) => void;
   showSideBar: boolean;
   setShowSideBar: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -65,10 +64,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     if (status === "authenticated") getUser();
   }, [status]);
 
-  const updateCredits = async (credits: number) => {
-    setUser({ ...user, credits });
-  };
-
   return (
     <UserContext.Provider
       value={{
@@ -80,7 +75,6 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         setApiKeyDiv,
         apiKey,
         setApiKey,
-        updateCredits,
         showSideBar,
         setShowSideBar,
       }}

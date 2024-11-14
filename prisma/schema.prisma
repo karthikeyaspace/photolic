@@ -16,13 +16,13 @@ model User {
   accounts      Account[]
   sessions      Session[]
   generations   Generation[]
-  credits       Int          @default(1)  
+  credits       Int          @default(1)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 }
 
 model Generation {
-  id                   String   @id @default(cuid())
+  id                   String   @id
   userId               String
   url                  String
   count                Int      @default(autoincrement())
