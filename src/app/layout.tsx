@@ -22,18 +22,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Photolic - AI Photo Generator",
     description:
-      "Generate unique images from text prompts using Photolic's advanced AI technology. Ideal for artists, marketers, and creative minds.",
+      "Generate photorealistic images from text prompts using Photolic AI. Ideal for artists, marketers, and creative minds.",
     url: "https://photolic.itskv.me",
     siteName: "Photolic",
     images: [
       {
-        url: "https://photolic.itskv.me/og1.png",
+        url: "https://photolic.itskv.me/og2.jpg",
         width: 1900,
         height: 970,
         alt: "Photolic image generation interface dashboard",
       },
       {
-        url: "https://photolic.itskv.me/og2.png",
+        url: "https://photolic.itskv.me/og1.jpg",
         width: 1900,
         height: 970,
         alt: "Image generation example using Photolic",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "Photolic - AI Photo Generator",
     description:
       "Turn your text into stunning images with Photolic's AI technology.",
-    images: "https://photolic.itskv.me/og2.png",
+    images: "https://photolic.itskv.me/og2.jpg",
   },
 };
 
