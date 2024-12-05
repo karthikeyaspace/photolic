@@ -304,16 +304,17 @@ const Sidebar = () => {
             Use seed to get similar photo
           </label>
         </div>
-        {useSeed && (
-          <input
-            type="text"
-            name="seed"
-            value={state.seed}
-            onChange={handleChange}
-            placeholder="Enter seed number"
-            className="bg-[#2C2C2C] w-full outline-none px-3 h-10 rounded"
-          />
-        )}
+        <input
+          type="text"
+          name="seed"
+          value={state.seed}
+          disabled={!useSeed}
+          onChange={handleChange}
+          placeholder="Enter seed number"
+          className={`bg-[#2C2C2C] w-full mt-2 outline-none px-3 h-10 rounded ${
+            !useSeed && "cursor-not-allowed"
+          }`}
+        />
       </div>
 
       {/* <div className="flex items-center mb-4">
