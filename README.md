@@ -54,8 +54,7 @@ Requirements for the software and other tools to build, test, and push:
     REPLICATE_API_KEY=r8_...
     GOOGLE_CLIENT_ID=your-google-client-id
     GOOGLE_CLIENT_SECRET=your-google-client-secret
-    NEXTAUTH_SECRET="ultrasecret"
-    NEXTAUTH_URL="http://localhost:3000"
+    AUTH_URL="http://localhost:3000" or <your-production-url>
     ```
 
 - **Replicate API Key**: Get it from [Replicate API Tokens](https://replicate.com/account/api-tokens)
