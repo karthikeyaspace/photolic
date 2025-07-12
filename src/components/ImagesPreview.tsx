@@ -22,17 +22,30 @@ const ImagePreview = () => {
     saveImageC,
     deleteImageC,
   } = useImages();
-  const { user, setShowSideBar } = useUser();
+  const { user, setShowSideBar, isLoading: authLoading, isAuthenticated } = useUser();
 
   useEffect(() => {
-    fetchImages(false);
-  }, []);
+    // Only fetch images when not loading and authenticated
+    if (!authLoading && isAuthenticated) {
+      fetchImages(false);
+    }
+  }, [authLoading, isAuthenticated]);
 
   const renderContent = () => {
-    if (loading) {
+    // Show loader if auth is loading OR images are loading
+    if (authLoading || loading) {
       return (
         <div className="flex justify-center items-center h-[calc(100vh-10rem)]">
           <LoaderCircle className="w-12 h-12 text-white animate-spin" />
+        </div>
+      );
+    }
+
+    // Show authentication error if not authenticated
+    if (!isAuthenticated) {
+      return (
+        <div className="flex justify-center items-center h-[calc(100vh-10rem)]">
+          <p className="text-gray-400">Please sign in to view your images</p>
         </div>
       );
     }

@@ -8,7 +8,6 @@ import t from "@/lib/Toast";
 
 const SetApiKey = () => {
   const { apiKeyDiv, setApiKeyDiv, apiKey, setApiKey } = useUser();
-  const [showKey, setShowKey] = useState(false);
   const [akey, setAkey] = useState("");
 
   useEffect(() => {
@@ -63,7 +62,7 @@ const SetApiKey = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
                 <input
-                  type={showKey ? "text" : "password"}
+                  type="text"
                   value={akey}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setAkey(e.target.value)
@@ -71,10 +70,6 @@ const SetApiKey = () => {
                   placeholder="Enter your Replicate API key"
                   className="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-sm"
                   required
-                />
-                <Eye
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 z-20 cursor-pointer"
-                  onClick={() => setShowKey(!showKey)}
                 />
               </div>
               <button

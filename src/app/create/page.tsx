@@ -1,4 +1,3 @@
-import React from "react";
 import { getServerAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Create from "@/components/Create";

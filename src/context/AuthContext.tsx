@@ -16,8 +16,8 @@ type AuthContextType = {
   setUser: (user: User | null) => void;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: () => Promise<void>;
   logout: () => void;
+  checkAuthStatus: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -56,61 +56,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setUser(userData);
         } else {
           Cookies.remove("auth_token");
+          setUser(null);
         }
+      } else {
+        setUser(null);
       }
     } catch (error) {
       console.error("Error checking auth status:", error);
       Cookies.remove("auth_token");
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const login = async () => {
-    return new Promise<void>((resolve, reject) => {
-      const popup = window.open(
-        `/api/auth/google`,
-        "googleLogin",
-        "width=500,height=600,scrollbars=yes,resizable=yes"
-      );
-
-      if (!popup) {
-        reject(new Error("Failed to open popup"));
-        return;
-      }
-
-      const checkClosed = setInterval(() => {
-        if (popup.closed) {
-          clearInterval(checkClosed);
-          // Check if login was successful by checking for token
-          const token = Cookies.get("auth_token");
-          if (token) {
-            checkAuthStatus().then(() => resolve());
-          } else {
-            reject(new Error("Login cancelled"));
-          }
-        }
-      }, 1000);
-
-      // Listen for messages from popup
-      const messageListener = (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
-        
-        if (event.data.type === "GOOGLE_AUTH_SUCCESS") {
-          popup.close();
-          clearInterval(checkClosed);
-          window.removeEventListener("message", messageListener);
-          checkAuthStatus().then(() => resolve());
-        } else if (event.data.type === "GOOGLE_AUTH_ERROR") {
-          popup.close();
-          clearInterval(checkClosed);
-          window.removeEventListener("message", messageListener);
-          reject(new Error(event.data.error || "Login failed"));
-        }
-      };
-
-      window.addEventListener("message", messageListener);
-    });
   };
 
   const logout = () => {
@@ -126,8 +83,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser,
         isLoading,
         isAuthenticated,
-        login,
         logout,
+        checkAuthStatus
       }}
     >
       {children}

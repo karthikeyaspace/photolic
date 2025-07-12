@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
 
     // Generate session token
     const sessionToken = generateSessionToken();
-    
+
     // Save session to database
     await saveSession(sessionToken, user.id);
 
@@ -79,24 +79,37 @@ export async function GET(request: NextRequest) {
           </head>
           <body>
             <script>
-              // Set the cookie
-              document.cookie = 'auth_token=${sessionToken}; path=/; max-age=2592000; SameSite=Lax';
-              
-              // Post message to parent window
-              if (window.opener) {
-                window.opener.postMessage({
-                  type: 'GOOGLE_AUTH_SUCCESS',
-                  user: ${JSON.stringify(user)}
-                }, window.location.origin);
-                window.close();
-              } else {
-                window.location.href = '/create';
+              try {
+                // Set the cookie
+                document.cookie = 'auth_token=${sessionToken}; path=/; max-age=2592000; SameSite=Lax${process.env.NODE_ENV === "production" ? "; Secure" : ""}';
+                
+                // Post message to parent window
+                if (window.opener) {
+                  window.opener.postMessage({
+                    type: 'GOOGLE_AUTH_SUCCESS',
+                    user: ${JSON.stringify(user).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}
+                  }, window.location.origin);
+                  window.close();
+                } else {
+                  window.location.href = '/create';
+                }
+              } catch (error) {
+                console.error('Auth popup error:', error);
+                if (window.opener) {
+                  window.opener.postMessage({
+                    type: 'GOOGLE_AUTH_ERROR',
+                    error: 'Authentication failed'
+                  }, window.location.origin);
+                  window.close();
+                } else {
+                  window.location.href = '/login?error=auth_failed';
+                }
               }
             </script>
           </body>
         </html>
       `;
-      
+
       return new NextResponse(html, {
         headers: {
           "Content-Type": "text/html",
@@ -116,7 +129,7 @@ export async function GET(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("Google OAuth error:", error);
-    
+
     if (state === "popup") {
       const html = `
         <!DOCTYPE html>
@@ -139,7 +152,7 @@ export async function GET(request: NextRequest) {
           </body>
         </html>
       `;
-      
+
       return new NextResponse(html, {
         headers: {
           "Content-Type": "text/html",
@@ -153,7 +166,7 @@ export async function GET(request: NextRequest) {
 
 async function saveUserToDatabase(googleUser: GoogleUser) {
   const { prisma } = await import("@/lib/db");
-  
+
   const user = await prisma.user.upsert({
     where: { email: googleUser.email },
     update: {
@@ -177,7 +190,7 @@ function generateSessionToken(): string {
 
 async function saveSession(token: string, userId: string) {
   const { prisma } = await import("@/lib/db");
-  
+
   // Clean up old sessions for this user
   await prisma.session.deleteMany({
     where: { userId },
