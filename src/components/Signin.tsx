@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LogIn, Loader2 } from "lucide-react";
 
@@ -9,6 +9,9 @@ const Signin = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const searchParams = useSearchParams();
+
+  const error = searchParams.get("error");
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -22,7 +25,12 @@ const Signin = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-[calc(100vh-56px)]">
+    <div className="flex flex-col justify-center items-center h-[calc(100vh-56px)]">
+      {error && (
+        <p className="text-red-500 mb-4">
+          Failed to authenticate
+        </p>
+      )}
       {(isLoading || isSigningIn) ? (
         <Loader2 className="animate-spin" size={24} />
       ) : !isAuthenticated ? (

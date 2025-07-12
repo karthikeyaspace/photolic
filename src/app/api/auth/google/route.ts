@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import env from "@/lib/env";
+import { prisma } from "@/lib/db";
 
 interface GoogleUser {
   email: string;
@@ -84,23 +85,26 @@ export async function GET(request: NextRequest) {
 }
 
 async function saveUserToDatabase(googleUser: GoogleUser) {
-  const { prisma } = await import("@/lib/db");
+  try {
+    const user = await prisma.user.upsert({
+      where: { email: googleUser.email },
+      update: {
+        name: googleUser.name,
+        image: googleUser.picture,
+      },
+      create: {
+        email: googleUser.email,
+        name: googleUser.name,
+        image: googleUser.picture,
+        credits: 2,
+      },
+    });
 
-  const user = await prisma.user.upsert({
-    where: { email: googleUser.email },
-    update: {
-      name: googleUser.name,
-      image: googleUser.picture,
-    },
-    create: {
-      email: googleUser.email,
-      name: googleUser.name,
-      image: googleUser.picture,
-      credits: 2,
-    },
-  });
-
-  return user;
+    return user;
+  } catch (error) {
+    console.error("Database error in saveUserToDatabase:", error);
+    throw new Error("Failed to save user to database");
+  }
 }
 
 function generateSessionToken(): string {
@@ -108,19 +112,22 @@ function generateSessionToken(): string {
 }
 
 async function saveSession(token: string, userId: string) {
-  const { prisma } = await import("@/lib/db");
+  try {
+    // Clean up old sessions for this user
+    await prisma.session.deleteMany({
+      where: { userId },
+    });
 
-  // Clean up old sessions for this user
-  await prisma.session.deleteMany({
-    where: { userId },
-  });
-
-  // Create new session
-  await prisma.session.create({
-    data: {
-      sessionToken: token,
-      userId,
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-    },
-  });
+    // Create new session
+    await prisma.session.create({
+      data: {
+        sessionToken: token,
+        userId,
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      },
+    });
+  } catch (error) {
+    console.error("Database error in saveSession:", error);
+    throw new Error("Failed to save session to database");
+  }
 }
