@@ -49,7 +49,7 @@ const Navbar = () => {
   return (
     <div className="h-14 px-6 flex justify-between items-center border-b border-gray-800">
       <div className="text-lg flex gap-1 bg-gradient-to-br from-yellow-100 via-yellow-600 to-red-400 bg-clip-text text-transparent">
-        <span className="font-bold">PHOTOLIC.AI</span>
+        <span className="font-bold">PHOTOLIC</span>
       </div>
 
       <div className="flex items-center relative">

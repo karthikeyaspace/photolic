@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "creative tools",
     "digital art",
   ],
-  authors: { url: "https://itskv.me", name: "Karthikeya Veruturi" },
+  authors: { url: "https://itskv.me", name: "Karthikeya V" },
   robots: "index, follow",
   openGraph: {
     title: "Photolic - AI Photo Generator",

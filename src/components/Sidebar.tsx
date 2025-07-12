@@ -222,6 +222,13 @@ const Sidebar = () => {
           onChange={handlePromptChange}
           placeholder="a photo of a cat eating popsicle"
           rows={3}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              setState((prev) => ({ ...prev, seed: getSeed() }));
+              handleFormSubmit(e);
+            }
+          }}
           required
           className="bg-transparent w-full outline-none text-white p-3"
         />
@@ -317,7 +324,7 @@ const Sidebar = () => {
         />
       </div>
 
-      {/* <div className="flex items-center mb-4">
+      <div className="flex items-center mb-4">
         <input
           type="checkbox"
           id="disableSafetyChecker"
@@ -334,7 +341,7 @@ const Sidebar = () => {
         <label htmlFor="disableSafetyChecker" className="text-sm">
           Disable safety checker
         </label>
-      </div> */}
+      </div>
 
       <div className="flex items-center mb-4">
         <input

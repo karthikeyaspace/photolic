@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import env from "@/lib/env";
 
+interface GoogleUser {
+  email: string;
+  name: string;
+  picture: string;
+  id: string;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
@@ -144,8 +151,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Helper functions
-async function saveUserToDatabase(googleUser: any) {
+async function saveUserToDatabase(googleUser: GoogleUser) {
   const { prisma } = await import("@/lib/db");
   
   const user = await prisma.user.upsert({
@@ -158,7 +164,7 @@ async function saveUserToDatabase(googleUser: any) {
       email: googleUser.email,
       name: googleUser.name,
       image: googleUser.picture,
-      credits: 10, // Default credits for new users
+      credits: 2,
     },
   });
 
