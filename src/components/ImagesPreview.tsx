@@ -22,11 +22,11 @@ const ImagePreview = () => {
     saveImageC,
     deleteImageC,
   } = useImages();
-  const { user, setShowSideBar, status } = useUser();
+  const { user, setShowSideBar } = useUser();
 
   useEffect(() => {
     fetchImages(false);
-  }, [status]);
+  }, []);
 
   const renderContent = () => {
     if (loading) {
