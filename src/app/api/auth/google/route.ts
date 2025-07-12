@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
     googleAuthUrl.searchParams.set("redirect_uri", `${env.AUTH_URL}/api/auth/google`);
     googleAuthUrl.searchParams.set("response_type", "code");
     googleAuthUrl.searchParams.set("scope", "openid email profile");
-    googleAuthUrl.searchParams.set("state", "popup");
 
     return NextResponse.redirect(googleAuthUrl.toString());
   }
@@ -69,55 +68,7 @@ export async function GET(request: NextRequest) {
     // Save session to database
     await saveSession(sessionToken, user.id);
 
-    // For popup flow, return a script that posts message to parent
-    if (state === "popup") {
-      const html = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Login Success</title>
-          </head>
-          <body>
-            <script>
-              try {
-                // Set the cookie
-                document.cookie = 'auth_token=${sessionToken}; path=/; max-age=2592000; SameSite=Lax${process.env.NODE_ENV === "production" ? "; Secure" : ""}';
-                
-                // Post message to parent window
-                if (window.opener) {
-                  window.opener.postMessage({
-                    type: 'GOOGLE_AUTH_SUCCESS',
-                    user: ${JSON.stringify(user).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}
-                  }, window.location.origin);
-                  window.close();
-                } else {
-                  window.location.href = '/create';
-                }
-              } catch (error) {
-                console.error('Auth popup error:', error);
-                if (window.opener) {
-                  window.opener.postMessage({
-                    type: 'GOOGLE_AUTH_ERROR',
-                    error: 'Authentication failed'
-                  }, window.location.origin);
-                  window.close();
-                } else {
-                  window.location.href = '/login?error=auth_failed';
-                }
-              }
-            </script>
-          </body>
-        </html>
-      `;
-
-      return new NextResponse(html, {
-        headers: {
-          "Content-Type": "text/html",
-        },
-      });
-    }
-
-    // Regular flow - set cookie and redirect
+    // Set cookie and redirect to create page
     const response = NextResponse.redirect(`${env.AUTH_URL}/create`);
     response.cookies.set("auth_token", sessionToken, {
       httpOnly: false,
@@ -129,37 +80,6 @@ export async function GET(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("Google OAuth error:", error);
-
-    if (state === "popup") {
-      const html = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Login Error</title>
-          </head>
-          <body>
-            <script>
-              if (window.opener) {
-                window.opener.postMessage({
-                  type: 'GOOGLE_AUTH_ERROR',
-                  error: 'Authentication failed'
-                }, window.location.origin);
-                window.close();
-              } else {
-                window.location.href = '/login?error=auth_failed';
-              }
-            </script>
-          </body>
-        </html>
-      `;
-
-      return new NextResponse(html, {
-        headers: {
-          "Content-Type": "text/html",
-        },
-      });
-    }
-
     return NextResponse.redirect(`${env.AUTH_URL}/login?error=auth_failed`);
   }
 }
