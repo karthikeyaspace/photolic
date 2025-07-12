@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Key, ExternalLink, Shield, Eye } from "lucide-react";
+import { X, Key, ExternalLink, Shield } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
 import t from "@/lib/Toast";
 
