@@ -1,10 +1,10 @@
 "use server";
 
-import { getServerSessionAuth } from "@/lib/auth";
+import { getServerAuth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
 const getAllImages = async () => {
-  const session = await getServerSessionAuth();
+  const session = await getServerAuth();
   if (!session || !session?.user?.email)
     return { success: false, message: "User not authenticated" };
 

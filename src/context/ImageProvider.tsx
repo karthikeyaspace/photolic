@@ -3,7 +3,7 @@
 import React, { useState, createContext } from "react";
 import { getAllImages } from "@/app/actions/getAllImages";
 import { ImageResProps } from "@/lib/types";
-import { useSession } from "next-auth/react";
+import { useAuth } from "./AuthContext";
 import t from "@/lib/Toast";
 import {
   saveImage,
@@ -32,7 +32,7 @@ export const ImageContext = createContext<ImageContextType | undefined>(
 const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { status } = useSession();
+  const { isAuthenticated, isLoading } = useAuth();
   const [images, setImages] = useState<ImageResProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,8 +41,8 @@ const ImageProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchImages = async (userLoad: boolean) => {
     if (userLoad) setLoading(true);
-    if (status === "loading") return;
-    if (status === "unauthenticated") {
+    if (isLoading) return;
+    if (!isAuthenticated) {
       setError("Please sign in to view images");
       setLoading(false);
       return;

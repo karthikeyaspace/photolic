@@ -1,10 +1,10 @@
 import React from "react";
-import { getServerSessionAuth } from "@/lib/auth";
+import { getServerAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Create from "@/components/Create";
 
 const CreatePage = async () => {
-  const session = await getServerSessionAuth();
+  const session = await getServerAuth();
   if (!session) {
     redirect("/login");
   }

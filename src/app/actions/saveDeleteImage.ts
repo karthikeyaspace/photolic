@@ -1,10 +1,10 @@
 "use server";
 
-import { getServerSessionAuth } from "../../lib/auth";
+import { getServerAuth } from "../../lib/auth";
 import { prisma } from "@/lib/db";
 
 const saveImage = async (imageId: string) => {
-  const session = await getServerSessionAuth();
+  const session = await getServerAuth();
   if (!session || !session?.user?.email)
     return { success: false, message: "User not authenticated" };
 
@@ -23,7 +23,7 @@ const saveImage = async (imageId: string) => {
 // unsave image
 
 const unsaveImage = async (imageId: string) => {
-  const session = await getServerSessionAuth();
+  const session = await getServerAuth();
   if (!session || !session?.user?.email)
     return { success: false, message: "User not authenticated" };
 
@@ -40,7 +40,7 @@ const unsaveImage = async (imageId: string) => {
 }
 
 const deleteImage = async (imageId: string) => {
-  const session = await getServerSessionAuth();
+  const session = await getServerAuth();
   if (!session || !session?.user?.email)
     return { success: false, message: "User not authenticated" };
 

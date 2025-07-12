@@ -1,33 +1,41 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import GoogleProvider from "next-auth/providers/google";
-import { getServerSession, type NextAuthOptions } from "next-auth";
-import { type Adapter } from "next-auth/adapters";
-
+import { cookies } from "next/headers";
 import { prisma } from "./db";
-import env from "./env";
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as Adapter,
-  providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-      httpOptions: {
-        timeout: 5000,
-      },
-    }),
-  ],
+export async function getServerAuth() {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token")?.value;
 
-  callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
+    if (!token) {
+      return null;
+    }
+
+    // Find session in database
+    const session = await prisma.session.findUnique({
+      where: { sessionToken: token },
+      include: { user: true },
+    });
+
+    if (!session || session.expires < new Date()) {
+      // Clean up expired session
+      if (session) {
+        await prisma.session.delete({
+          where: { sessionToken: token },
+        });
+      }
+      return null;
+    }
+
+    return {
       user: {
-        ...session.user,
-        id: user.id,
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.image,
       },
-    }),
-  },
-  secret: env.NEXTAUTH_SECRET,
-};
-
-export const getServerSessionAuth = async () => getServerSession(authOptions);
+    };
+  } catch (error) {
+    console.error("Error in getServerAuth:", error);
+    return null;
+  }
+}

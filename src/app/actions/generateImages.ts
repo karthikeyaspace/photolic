@@ -6,7 +6,7 @@ import {
   GenerationResponseTypes,
 } from "@/lib/types";
 import Replicate from "replicate";
-import { getServerSessionAuth } from "@/lib/auth";
+import { getServerAuth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { updateUserCredits } from "./userAction";
 import { v4 } from "uuid";
@@ -20,7 +20,7 @@ const generateImages = async (
     auth: formData.useApiKey ? formData.apiKey : process.env.REPLICATE_API_KEY,
   });
 
-  const session = await getServerSessionAuth();
+  const session = await getServerAuth();
   const userEmail = session?.user?.email;
   if (!userEmail || !session)
     return { success: false, message: "User not found" };

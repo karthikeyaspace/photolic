@@ -1,8 +1,7 @@
 "use client";
 
 import React, { createContext, useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
+import { useAuth } from "./AuthContext";
 
 type User = {
   name: string;
@@ -14,8 +13,8 @@ type User = {
 interface UserContextTypes {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
-  session: Session | null;
-  status: "authenticated" | "loading" | "unauthenticated";
+  isAuthenticated: boolean;
+  isLoading: boolean;
   apiKeyDiv: boolean;
   setApiKeyDiv: React.Dispatch<React.SetStateAction<boolean>>;
   apiKey?: string;
@@ -31,7 +30,7 @@ export const UserContext = createContext<UserContextTypes | undefined>(
 const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: session, status } = useSession();
+  const { user: authUser, isAuthenticated, isLoading } = useAuth();
   const [apiKeyDiv, setApiKeyDiv] = useState(false);
   const [showSideBar, setShowSideBar] = useState(true);
   const [apiKey, setApiKey] = useState<string>("");
@@ -47,13 +46,31 @@ const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     if (lkey) setApiKey(lkey);
   }, []);
 
+  useEffect(() => {
+    if (authUser) {
+      setUser({
+        name: authUser.name,
+        email: authUser.email,
+        image: authUser.image,
+        credits: authUser.credits,
+      });
+    } else {
+      setUser({
+        name: "",
+        email: "",
+        image: "",
+        credits: 0,
+      });
+    }
+  }, [authUser]);
+
   return (
     <UserContext.Provider
       value={{
         user,
         setUser,
-        session,
-        status,
+        isAuthenticated,
+        isLoading,
         apiKeyDiv,
         setApiKeyDiv,
         apiKey,

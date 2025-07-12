@@ -1,10 +1,10 @@
 "use server";
 
-import { getServerSessionAuth } from "../../lib/auth";
+import { getServerAuth } from "../../lib/auth";
 import { prisma } from "@/lib/db";
 
 const getUserDetails = async () => {
-  const session = await getServerSessionAuth();
+  const session = await getServerAuth();
   const userEmail = session?.user?.email;
   if (!userEmail || !session)
     return { success: false, message: "User not found" };

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { signOut } from "next-auth/react";
+import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
 import { LogOut, Key, Trash, PlusCircle } from "lucide-react";
 import { useUser } from "@/hooks/useUser";
@@ -10,7 +10,9 @@ import { getUserDetails } from "@/app/actions/userAction";
 
 const Navbar = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { user, setUser, session, setApiKeyDiv, setApiKey, apiKey } = useUser();
+  const { user, setUser, isAuthenticated, setApiKeyDiv, setApiKey, apiKey } = useUser();
+  const { logout } = useAuth();
+  
   const handleApiKeyDiv = () => {
     setShowMenu(false);
     setApiKeyDiv(true);
@@ -23,8 +25,14 @@ const Navbar = () => {
     t("API key removed from your localstorage", "info");
   };
 
+  const handleSignOut = () => {
+    setShowMenu(false);
+    logout();
+  };
+
   useEffect(() => {
     const getUser = async () => {
+      if (!isAuthenticated) return;
       const response = await getUserDetails();
       if (response.success && response.data) {
         setUser({
@@ -36,7 +44,7 @@ const Navbar = () => {
       } else t(response.message || "Failed to get user", "error");
     };
     getUser();
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <div className="h-14 px-6 flex justify-between items-center border-b border-gray-800">
@@ -45,7 +53,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center relative">
-        {session && (
+        {isAuthenticated && (
           <button
             onClick={() => setShowMenu(!showMenu)}
             className="flex items-center space-x-2 text-gray-200 hover:text-white"
@@ -56,7 +64,7 @@ const Navbar = () => {
           </button>
         )}
 
-        {showMenu && session && (
+        {showMenu && isAuthenticated && (
           <motion.div
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -90,7 +98,7 @@ const Navbar = () => {
               </button>
 
               <button
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="text-gray-200 hover:bg-gray-700 p-2 rounded-md flex items-center transition duration-150"
               >
                 <LogOut size={16} className="mr-2" />
